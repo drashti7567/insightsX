@@ -9,7 +9,7 @@ import com.example.diceroller.BuildConfig
 import java.io.File
 
 object IntentUtils {
-    fun createIntentTOShareCsv(context: Context, fileName: String, appChooserTitle: String) {
+    fun createIntentTOShareCsv(context: Context, fileName: String, appChooserTitle: String, emailSubject: String) {
         val file: File = File(context.filesDir.absolutePath, fileName)
         val pathUri: Uri =
             FileProvider.getUriForFile(
@@ -19,7 +19,7 @@ object IntentUtils {
             )
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/csv"
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Data")
+        intent.putExtra(Intent.EXTRA_SUBJECT, emailSubject)
         intent.putExtra(Intent.EXTRA_STREAM, pathUri)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 

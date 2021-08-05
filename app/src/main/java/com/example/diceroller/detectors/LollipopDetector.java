@@ -13,7 +13,7 @@ import com.example.diceroller.utils.MiscUtils;
 public class LollipopDetector implements Detector {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public String getForegroundApp(final Context context) {
-        if(!MiscUtils.hasUsageStatsPermission(context))
+        if(!MiscUtils.INSTANCE.hasUsageStatsPermission(context))
             return null;
 
         String foregroundApp = null;

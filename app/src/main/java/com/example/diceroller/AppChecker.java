@@ -37,7 +37,7 @@ public class AppChecker {
     public AppChecker() {
         listeners = new HashMap<>();
         handler = new Handler(Looper.getMainLooper());
-        if(MiscUtils.postLollipop())
+        if(MiscUtils.INSTANCE.postLollipop())
             detector = new LollipopDetector();
         else
             detector = new PreLollipopDetector();

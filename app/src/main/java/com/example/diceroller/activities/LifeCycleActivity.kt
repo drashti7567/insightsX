@@ -9,6 +9,10 @@ import com.example.diceroller.utils.PermissionsUtil
 
 class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
 
+    companion object {
+        var allowWindowContentChangeEvent: Boolean = true
+    }
+
     var activityReferences: Int = 0
     var isActivityChangingConfigurations: Boolean = false
 

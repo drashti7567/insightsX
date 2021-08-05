@@ -5,15 +5,16 @@ import java.io.*
 
 object FileUtils {
     
-    fun emptyFileContents(context: Context, fileName: String) {
+    fun emptyFileContents(context: Context, fileName: String, initialContent: String?) {
         val fOut: FileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-        fOut.write("".toByteArray())
+        val contentToWriteInEmptyFile: String = initialContent ?: ""
+        fOut.write(contentToWriteInEmptyFile.toByteArray())
         fOut.close()
     }
     
     fun writeFileOnInternalStorage(context: Context, fileName: String, sBody: String) {
         val fOut: FileOutputStream = context.openFileOutput(fileName, Context.MODE_APPEND)
-        fOut.write((sBody + "\n").toByteArray())
+        fOut.write((sBody).toByteArray())
         fOut.close()
     }
 

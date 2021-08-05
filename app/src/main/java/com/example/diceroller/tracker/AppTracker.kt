@@ -1,7 +1,11 @@
 package com.example.diceroller.tracker
 
+import android.app.KeyguardManager
 import android.content.Context
+import android.media.AudioManager
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.diceroller.AppChecker
 import com.example.diceroller.constants.AppNameConstants
 import com.example.diceroller.constants.FileNameConstants
@@ -9,6 +13,10 @@ import com.example.diceroller.models.AppUsageQueueData
 import com.example.diceroller.utils.FileUtils
 import com.example.diceroller.utils.MiscUtils
 import kotlinx.coroutines.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayDeque
 
@@ -34,24 +42,60 @@ object AppTracker {
                 val currentApplicationName =
                     MiscUtils.getApplicationNameFromPackage(context, currentProcessPackageName)
 
-                val currentDate: String = Date().toString()
+                val currentDate = Date()
 
-                if (appTrackerContext.appUsageQueue.size > 0 &&
-                        appTrackerContext.appUsageQueue.last().endTime == null)
-                    appTrackerContext.appUsageQueue.last().endTime = currentDate
+                val myKM: KeyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager;
 
-                if(!currentApplicationName.equals(AppNameConstants.LAUNCHER_NAME, true)) {
-                    val appUsageInfo: AppUsageQueueData =
-                        AppUsageQueueData(
-                            currentProcessPackageName, currentApplicationName,
-                            currentDate, null
-                        )
+                if (myKM.isKeyguardLocked) {
+                    appTrackerContext.recordEndTimeOnDisruption(context, currentDate)
+                }
+                else {
+                    // Discard if its quickstart launcher and place end time of last app.
+                    if (currentApplicationName.equals(AppNameConstants.LAUNCHER_NAME, true) ||
+                            currentApplicationName.equals(AppNameConstants.ANDROID_SYSTEM, true)) {
+                        appTrackerContext.recordEndTimeOnDisruption(context, currentDate)
+                    }
+                    else {
+                        // Check if application has switched and last applications end time is yet to be recorderd
+                        if (appTrackerContext.appUsageQueue.size > 0 &&
+                            appTrackerContext.appUsageQueue.last().endTime == null &&
+                            !currentApplicationName.equals(appTrackerContext.appUsageQueue.last().appName, true)) {
+                            appTrackerContext.recordEndTimeOnDisruption(context, currentDate)
+                        }
+                        // If last application has ended, then push this app in queue
+                        if (appTrackerContext.appUsageQueue.size == 0 ||
+                            (appTrackerContext.appUsageQueue.size > 0 &&
+                                    appTrackerContext.appUsageQueue.last().endTime != null)) {
+                            val appUsageInfo: AppUsageQueueData =
+                                AppUsageQueueData(
+                                    currentProcessPackageName, currentApplicationName,
+                                    MiscUtils.dayOfWeekFormat.format(currentDate),
+                                    MiscUtils.dateFormat.format(currentDate), null
+                                )
 
-                    appTrackerContext.appUsageQueue.addLast(appUsageInfo)
+                            appTrackerContext.appUsageQueue.addLast(appUsageInfo)
+                        }
+                    }
                 }
 
-                delay(2000)
+                delay(1000)
             }
+        }
+    }
+
+    private fun recordEndTimeOnDisruption(context: Context, currentDate: Date) {
+        if (this.appUsageQueue.size > 0 &&
+            this.appUsageQueue.last().endTime == null) {
+            this.appUsageQueue.last().endTime =
+                MiscUtils.dateFormat.format(currentDate)
+            this.writeAppSpecificQueueDataToFileOnAppEnd(
+                this.appUsageQueue.last().appName, context)
+        }
+    }
+
+    private fun writeAppSpecificQueueDataToFileOnAppEnd(appName: String, context: Context) {
+        if (appName.equals(AppNameConstants.YOUTUBE_NAME, true)) {
+            YoutubeTracker.writeYoutubeUsageDataToFile(context)
         }
     }
 
@@ -60,7 +104,7 @@ object AppTracker {
         this.writeAppUsageToFileJob = CoroutineScope(Dispatchers.Default).launch {
             while (isActive) {
                 appTrackerContext.writeAppUsageDataToFile(context)
-                delay(6000)
+                delay(10000)
             }
         }
     }
@@ -71,11 +115,12 @@ object AppTracker {
             val appUsageElement: AppUsageQueueData = this.appUsageQueue.first()
             if (appUsageElement.endTime != null) {
                 val csvRow: String =
-                    appUsageElement.appName + "," + appUsageElement.appPackageName +
+                    appUsageElement.appName + "," + appUsageElement.appPackageName + "," + appUsageElement.dayofWeek +
                             "," + appUsageElement.startTime + "," + appUsageElement.endTime + "\n"
                 csvChunk += csvRow
                 this.appUsageQueue.removeFirst()
-            } else {
+            }
+            else {
                 break
             }
         }
@@ -83,14 +128,6 @@ object AppTracker {
             context,
             FileNameConstants.APP_USAGE_FILE_NAME,
             csvChunk
-        )
-
-        Log.d(
-            "FILE_CONTENT",
-            FileUtils.readFileOnInternalStorage(
-                context,
-                FileNameConstants.APP_USAGE_FILE_NAME
-            )
         )
 
     }
