@@ -24,4 +24,16 @@ object FileUtils {
         }
         return fileText
     }
+
+    fun getFileContentAsList(context: Context, fileName: String?): MutableList<String> {
+        val fileTextList: MutableList<String> = ArrayList()
+        context.openFileInput(fileName).bufferedReader().useLines { lines ->
+            lines.forEach { line ->
+                run {
+                    fileTextList.add(line)
+                }
+            }
+        }
+        return fileTextList
+    }
 }

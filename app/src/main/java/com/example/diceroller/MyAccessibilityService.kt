@@ -27,14 +27,14 @@ class MyAccessibilityService : AccessibilityService() {
         Log.d("TAG", "Service Connected")
 
         val appChecker: AppChecker = AppChecker();
-        FileUtils.emptyFileContents(
-            this,
-            FileNameConstants.APP_USAGE_FILE_NAME,
-            FileNameConstants.APP_USAGE_FILE_HEADERS)
-        FileUtils.emptyFileContents(
-            this,
-            FileNameConstants.YOUTUBE_USAGE_FILE_NAME,
-            FileNameConstants.YOUTUBE_USAGE_FILE_HEADERS)
+//        FileUtils.emptyFileContents(
+//            this,
+//            FileNameConstants.APP_USAGE_FILE_NAME,
+//            FileNameConstants.APP_USAGE_FILE_HEADERS)
+//        FileUtils.emptyFileContents(
+//            this,
+//            FileNameConstants.YOUTUBE_USAGE_FILE_NAME,
+//            FileNameConstants.YOUTUBE_USAGE_FILE_HEADERS)
         AppTracker.startAppTracker(appChecker, this)
     }
 

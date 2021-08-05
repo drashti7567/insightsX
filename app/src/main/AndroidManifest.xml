@@ -32,6 +32,12 @@
             </intent-filter>
         </activity> <!-- Mention the service name here -->
 
+        <activity
+            android:name=".activities.UsagePatternActivity"
+            android:exported="true">
+
+        </activity>
+
         <service android:name=".MyAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">

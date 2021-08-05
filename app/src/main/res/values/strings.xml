@@ -5,5 +5,6 @@
     <string name="heading">Start Tracking</string>
     <string name="startButtonText">App Usage Data</string>
     <string name="stopButtonText">Youtube Data</string>
+    <string name="usagePatternButtonText">Usage Pattern</string>
 
 </resources>
