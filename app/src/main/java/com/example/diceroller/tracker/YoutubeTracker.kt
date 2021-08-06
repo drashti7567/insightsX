@@ -155,7 +155,8 @@ object YoutubeTracker {
         FileUtils.writeFileOnInternalStorage(
             context,
             FileNameConstants.YOUTUBE_USAGE_FILE_NAME,
-            csvChunk
+            csvChunk,
+            FileNameConstants.YOUTUBE_USAGE_FILE_HEADERS
         )
     }
 

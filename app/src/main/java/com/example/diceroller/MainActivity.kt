@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.diceroller.activities.UsagePatternActivity
 import com.example.diceroller.constants.FileNameConstants
@@ -39,15 +40,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
 
         if (view === start) {
-            IntentUtils.createIntentTOShareCsv(
-                this, FileNameConstants.APP_USAGE_FILE_NAME, "Share App Usage Data", "App Usage Data")
+            try {
+                IntentUtils.createIntentTOShareCsv(
+                    this, FileNameConstants.APP_USAGE_FILE_NAME, "Share App Usage Data", "App Usage Data")
+            }
+            catch (e: Exception) {
+                Toast.makeText(this, "Apps not browsed yet.", Toast.LENGTH_SHORT).show()
+            }
         }
-        else if(view === stop) {
-            Log.d("File Content", FileUtils.readFileOnInternalStorage(this, FileNameConstants.YOUTUBE_USAGE_FILE_NAME))
-            IntentUtils.createIntentTOShareCsv(
-                this, FileNameConstants.YOUTUBE_USAGE_FILE_NAME, "Share Youtube Usage Data", "Youtube Usage Data")
+        else if (view === stop) {
+            try {
+                Log.d(
+                    "File Content",
+                    FileUtils.readFileOnInternalStorage(this, FileNameConstants.YOUTUBE_USAGE_FILE_NAME))
+                IntentUtils.createIntentTOShareCsv(
+                    this, FileNameConstants.YOUTUBE_USAGE_FILE_NAME, "Share Youtube Usage Data", "Youtube Usage Data")
+            }
+            catch (e: Exception) {
+                Toast.makeText(this, "Youtube not browsed yet. Please open youtube.", Toast.LENGTH_SHORT).show()
+            }
         }
-        else if(view === usagePattern) {
+        else if (view === usagePattern) {
             Log.d("TAG", "Usage Pattern Clicked!!")
             val startUsagePatternActivity: Intent = Intent(this.applicationContext, UsagePatternActivity::class.java)
             startActivity(startUsagePatternActivity)

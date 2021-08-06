@@ -41,6 +41,7 @@ class UsagePatternActivity : AppCompatActivity() {
 
     private fun parseCsvData(appUsageFileDataList: MutableList<String>): ArrayList<AppUsageQueueData> {
         val appUsageList: ArrayList<AppUsageQueueData> = ArrayList()
+        appUsageFileDataList.removeAt(0)
         appUsageFileDataList.forEach {
             val splitData = it.split(",")
             val queueElement = AppUsageQueueData(splitData[1], splitData[0], splitData[2], splitData[3], splitData[4])

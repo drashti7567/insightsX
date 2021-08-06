@@ -121,7 +121,8 @@ object AppTracker {
         FileUtils.writeFileOnInternalStorage(
             context,
             FileNameConstants.APP_USAGE_FILE_NAME,
-            csvChunk
+            csvChunk,
+            FileNameConstants.APP_USAGE_FILE_HEADERS
         )
     }
 
