@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         PermissionsUtil.checkPermissions(this)
 
-//        startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-
         start = findViewById<View>(R.id.startButton) as Button
         stop = findViewById<View>(R.id.stopButton) as Button
         usagePattern = findViewById<View>(R.id.usagePatternButton) as Button

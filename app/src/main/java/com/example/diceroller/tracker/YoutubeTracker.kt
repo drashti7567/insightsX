@@ -158,4 +158,8 @@ object YoutubeTracker {
             csvChunk
         )
     }
+
+    fun onDestroy(context: Context) {
+        writeYoutubeUsageDataToFile(context)
+    }
 }

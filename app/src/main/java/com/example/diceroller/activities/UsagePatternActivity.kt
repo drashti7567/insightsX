@@ -59,7 +59,7 @@ class UsagePatternActivity : AppCompatActivity() {
             val difference = stopTime.time - startTime.time
 
             mapOfTotalAppTime[appName] =
-                if (mapOfTotalAppTime.contains(appName)) mapOfTotalAppTime[appName] ?: 0 + difference else difference
+                if (mapOfTotalAppTime.contains(appName)) (mapOfTotalAppTime[appName] ?: 0) + difference else difference
         }
         return mapOfTotalAppTime
 
@@ -73,7 +73,7 @@ class UsagePatternActivity : AppCompatActivity() {
             .toMap()
             .forEach { (key, value) ->
                 run {
-                    sumTimeArrayList.add(key + " (" + value / 1000 + " secs) ")
+                    sumTimeArrayList.add(key + " (" + value / 60000 + " mins) ")
                 }
             }
 

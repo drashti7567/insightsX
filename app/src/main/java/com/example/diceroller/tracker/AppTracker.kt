@@ -2,21 +2,13 @@ package com.example.diceroller.tracker
 
 import android.app.KeyguardManager
 import android.content.Context
-import android.media.AudioManager
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
-import com.example.diceroller.AppChecker
+import com.example.diceroller.detectors.AppChecker
 import com.example.diceroller.constants.AppNameConstants
 import com.example.diceroller.constants.FileNameConstants
 import com.example.diceroller.models.AppUsageQueueData
 import com.example.diceroller.utils.FileUtils
 import com.example.diceroller.utils.MiscUtils
 import kotlinx.coroutines.*
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayDeque
 
@@ -28,17 +20,17 @@ object AppTracker {
 
     lateinit var writeAppUsageToFileJob: Job
 
-    fun startAppTracker(appChecker: AppChecker, context: Context) {
+    fun startAppTracker(context: Context) {
         this.appUsageQueue = ArrayDeque();
-        this.startJobForCheckingAppUpdates(appChecker, context)
+        this.startJobForCheckingAppUpdates(context)
         this.startJobToWriteToFile(context)
     }
 
-    private fun startJobForCheckingAppUpdates(appChecker: AppChecker, context: Context) {
+    private fun startJobForCheckingAppUpdates(context: Context) {
         val appTrackerContext: AppTracker = this
         this.appTrackingCoroutineJob = CoroutineScope(Dispatchers.Default).launch {
             while (isActive) {
-                val currentProcessPackageName = appChecker.getForegroundApp(context)
+                val currentProcessPackageName = AppChecker.getForegroundApp(context)
                 val currentApplicationName =
                     MiscUtils.getApplicationNameFromPackage(context, currentProcessPackageName)
 
@@ -52,7 +44,7 @@ object AppTracker {
                 else {
                     // Discard if its quickstart launcher and place end time of last app.
                     if (currentApplicationName.equals(AppNameConstants.LAUNCHER_NAME, true) ||
-                            currentApplicationName.equals(AppNameConstants.ANDROID_SYSTEM, true)) {
+                        currentApplicationName.equals(AppNameConstants.ANDROID_SYSTEM, true)) {
                         appTrackerContext.recordEndTimeOnDisruption(context, currentDate)
                     }
                     else {
@@ -103,17 +95,19 @@ object AppTracker {
         val appTrackerContext = this
         this.writeAppUsageToFileJob = CoroutineScope(Dispatchers.Default).launch {
             while (isActive) {
-                appTrackerContext.writeAppUsageDataToFile(context)
+                appTrackerContext.writeAppUsageDataToFile(context, false)
                 delay(10000)
             }
         }
     }
 
-    private fun writeAppUsageDataToFile(context: Context) {
+    private fun writeAppUsageDataToFile(context: Context, isCalledFromDestroy: Boolean = false) {
         var csvChunk: String = ""
         while (this.appUsageQueue.size > 0) {
             val appUsageElement: AppUsageQueueData = this.appUsageQueue.first()
-            if (appUsageElement.endTime != null) {
+            if (appUsageElement.endTime != null || isCalledFromDestroy) {
+
+                if (isCalledFromDestroy) appUsageElement.endTime = MiscUtils.dateFormat.format(Date())
                 val csvRow: String =
                     appUsageElement.appName + "," + appUsageElement.appPackageName + "," + appUsageElement.dayofWeek +
                             "," + appUsageElement.startTime + "," + appUsageElement.endTime + "\n"
@@ -129,6 +123,11 @@ object AppTracker {
             FileNameConstants.APP_USAGE_FILE_NAME,
             csvChunk
         )
+    }
 
+    fun onDestroy(context: Context) {
+        this.writeAppUsageToFileJob.cancel()
+        this.appTrackingCoroutineJob.cancel()
+        this.writeAppUsageDataToFile(context, true)
     }
 }
