@@ -86,7 +86,7 @@ object AppTracker {
     }
 
     private fun writeAppSpecificQueueDataToFileOnAppEnd(appName: String, context: Context) {
-        if (appName.equals(AppNameConstants.YOUTUBE_NAME, true)) {
+        if (appName.equals(AppNameConstants.YOUTUBE_PACKAGE_NAME, true)) {
             YoutubeTracker.writeYoutubeUsageDataToFile(context)
         }
     }
