@@ -81,12 +81,12 @@ object AppTracker {
             this.appUsageQueue.last().endTime =
                 MiscUtils.dateFormat.format(currentDate)
             this.writeAppSpecificQueueDataToFileOnAppEnd(
-                this.appUsageQueue.last().appName, context)
+                this.appUsageQueue.last().appPackageName, context)
         }
     }
 
-    private fun writeAppSpecificQueueDataToFileOnAppEnd(appName: String, context: Context) {
-        if (appName.equals(AppNameConstants.YOUTUBE_PACKAGE_NAME, true)) {
+    private fun writeAppSpecificQueueDataToFileOnAppEnd(appPackageName: String, context: Context) {
+        if (appPackageName.equals(AppNameConstants.YOUTUBE_PACKAGE_NAME, true)) {
             YoutubeTracker.writeYoutubeUsageDataToFile(context)
         }
     }
