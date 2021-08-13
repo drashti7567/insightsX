@@ -5,16 +5,21 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
 import android.os.Process
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
+import androidx.annotation.RequiresApi
 
 
 object PermissionsUtil {
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun checkPermissions(context: Context) {
 
-        val isUsageStatsEnabled: Boolean = PermissionsUtil.checkIfAppHasUsageAccessPermission(context)
+        val isUsageStatsEnabled: Boolean = checkIfAppHasUsageAccessPermission(context)
         if(!isUsageStatsEnabled) {
             val intent: Intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -22,13 +27,22 @@ object PermissionsUtil {
             return
         }
 
+        val isIgnoringBatteryOptimization: Boolean = checkIsIgnoringBatteryOptimizations(context)
+        if(!isIgnoringBatteryOptimization) {
+            val intent: Intent = Intent()
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package: " + context.packageName)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
+
         val isAccessibilityServiceOn: Boolean =
-            PermissionsUtil.isAccessibilityServiceEnabled(context,  "MyAccessibilityService")
+            isAccessibilityServiceEnabled(context,  "MyAccessibilityService")
         if(!isAccessibilityServiceOn) {
             val intent: Intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
-
+            return
         }
 
     }
@@ -58,5 +72,11 @@ object PermissionsUtil {
             ) return true
         }
         return false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkIsIgnoringBatteryOptimizations(context: Context): Boolean {
+        val powerManager: PowerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(context.packageName)
     }
 }

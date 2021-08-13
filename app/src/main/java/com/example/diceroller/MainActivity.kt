@@ -1,17 +1,25 @@
 package com.example.diceroller;
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.diceroller.activities.UsagePatternActivity
 import com.example.diceroller.constants.FileNameConstants
 import com.example.diceroller.utils.FileUtils
 import com.example.diceroller.utils.IntentUtils
+import com.example.diceroller.utils.MiscUtils
 import com.example.diceroller.utils.PermissionsUtil
+import com.example.diceroller.utils.PowerManagerUtils
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -22,6 +30,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var usagePattern: Button? = null
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,6 +44,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         start!!.setOnClickListener(this)
         stop!!.setOnClickListener(this)
         usagePattern!!.setOnClickListener(this)
+
+        this.registerReceiverForPowerSaver(this)
     }
 
     override fun onClick(view: View) {
@@ -65,6 +76,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val startUsagePatternActivity: Intent = Intent(this.applicationContext, UsagePatternActivity::class.java)
             startActivity(startUsagePatternActivity)
         }
+    }
+
+    private fun registerReceiverForPowerSaver(mainActivity: MainActivity) {
+        val powerSaverChangeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val systemLogDesc: String =
+                    if (PowerManagerUtils.checkIfPowerSaverIsOn(mainActivity)) ", Power Saver ON" else ", Power Saver OFF"
+                FileUtils.writeFileOnInternalStorage(
+                    mainActivity, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
+                     MiscUtils.dateFormat.format(Date()) + systemLogDesc + "\n",
+                    FileNameConstants.SYSTEM_LOGS_FILE_HEADERS
+                )
+            }
+        }
+
+        val filter = IntentFilter()
+        filter.addAction("android.os.action.POWER_SAVE_MODE_CHANGED")
+        registerReceiver(powerSaverChangeReceiver, filter)
     }
 
 
