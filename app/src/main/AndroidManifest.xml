@@ -36,7 +36,11 @@
         <activity
             android:name=".activities.UsagePatternActivity"
             android:exported="true">
+        </activity>
 
+        <activity
+            android:name=".activities.SystemLogsActivity"
+            android:exported="true">
         </activity>
 
         <service android:name=".MyAccessibilityService"

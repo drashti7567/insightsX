@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.example.diceroller.activities.SystemLogsActivity
 import com.example.diceroller.activities.UsagePatternActivity
 import com.example.diceroller.constants.FileNameConstants
 import com.example.diceroller.utils.FileUtils
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var stop: Button? = null
 
     private var usagePattern: Button? = null
+    private var systemLogs: Button? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +42,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         start = findViewById<View>(R.id.startButton) as Button
         stop = findViewById<View>(R.id.stopButton) as Button
         usagePattern = findViewById<View>(R.id.usagePatternButton) as Button
+        systemLogs = findViewById<View>(R.id.systemLogsButton) as Button
 
         start!!.setOnClickListener(this)
         stop!!.setOnClickListener(this)
         usagePattern!!.setOnClickListener(this)
+        systemLogs!!.setOnClickListener(this)
 
         this.registerReceiverForPowerSaver(this)
     }
@@ -76,6 +80,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val startUsagePatternActivity: Intent = Intent(this.applicationContext, UsagePatternActivity::class.java)
             startActivity(startUsagePatternActivity)
         }
+        else if (view === systemLogs) {
+            Log.d("TAG", "System Logs Clicked!!")
+            val startSystemLogsActivity: Intent = Intent(this.applicationContext, SystemLogsActivity::class.java)
+            startActivity(startSystemLogsActivity)
+        }
+
     }
 
     private fun registerReceiverForPowerSaver(mainActivity: MainActivity) {

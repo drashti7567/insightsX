@@ -30,10 +30,11 @@ object PermissionsUtil {
         val isIgnoringBatteryOptimization: Boolean = checkIsIgnoringBatteryOptimizations(context)
         if(!isIgnoringBatteryOptimization) {
             val intent: Intent = Intent()
-            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-            intent.data = Uri.parse("package: " + context.packageName)
+            intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+//            intent.data = Uri.parse("package: " + context.packageName)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
+            return
         }
 
         val isAccessibilityServiceOn: Boolean =
