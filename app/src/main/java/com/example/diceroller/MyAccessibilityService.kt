@@ -36,6 +36,7 @@ class MyAccessibilityService : AccessibilityService() {
             !LifeCycleActivity.allowWindowContentChangeEvent) return
         if (event.eventType == 4096) return
         if (event.eventType == AccessibilityEvent.TYPE_ANNOUNCEMENT) return
+
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
             LifeCycleActivity.allowWindowContentChangeEvent = true
         }
@@ -45,7 +46,11 @@ class MyAccessibilityService : AccessibilityService() {
     }
 
     private fun filterBasedOnAppPackageName(event: AccessibilityEvent) {
+
         if (event.packageName != null && event.packageName.equals("com.google.android.youtube")) {
+            if(event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
+                return
+            }
             YoutubeTracker.onYoutubeEventReceived(event, this)
         };
     }

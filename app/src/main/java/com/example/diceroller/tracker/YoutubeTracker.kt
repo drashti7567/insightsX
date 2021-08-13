@@ -125,6 +125,7 @@ object YoutubeTracker {
     }
 
     fun onYoutubeEventReceived(event: AccessibilityEvent, context: Context) {
+
         val source: AccessibilityNodeInfo = event.source ?: return;
         this.initializeViewIdsList()
 
