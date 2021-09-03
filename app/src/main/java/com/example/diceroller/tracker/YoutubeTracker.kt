@@ -2,6 +2,7 @@ package com.example.diceroller.tracker
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.example.diceroller.activities.LifeCycleActivity
@@ -76,7 +77,7 @@ object YoutubeTracker {
                 this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_FLOATY_VIDEO_NAME_ID] ?: ""
             usageElement.videoChannelName =
                 this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_FLOATY_CHANNEL_NAME] ?: ""
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 LifeCycleActivity.allowWindowContentChangeEvent = false
             }, 1000)
 
@@ -95,7 +96,7 @@ object YoutubeTracker {
             usageElement.contentType = YoutubeContentType.YOUTUBE_VIDEO
             usageElement.videoName = this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_VIDEO_NAME_ID] ?: ""
             usageElement.videoChannelName = this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_CHANNEL_NAME] ?: ""
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 LifeCycleActivity.allowWindowContentChangeEvent = false
             }, 1000)
         }
