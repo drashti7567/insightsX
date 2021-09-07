@@ -7,5 +7,17 @@
     <string name="stopButtonText">Youtube Data</string>
     <string name="usagePatternButtonText">Usage Pattern</string>
     <string name="systemLogsButtonText">System Logs</string>
+    <string name="permission_popup_button_text">Go</string>
+    <string name="enter_member_id_toolbar_text">Enter Member ID</string>
+    <string name="member_id">Member ID</string>
+    <string name="enter_member_id_input_hint">enter allotted member ID</string>
+    <string name="tems_of_service_text">I agree to InsightsX Terms of Service</string>
+    <string name="privacy_policy_text">I agree to the InsightsX Privacy Policy</string>
+    <string name="submit">SUMBIT</string>
+    <string name="footer_text">InsightsX 2021</string>
+    <string name="pemissions_header">Permissions</string>
+    <string name="accessibility_service_permission_text">Access to InsightsX accessibility service</string>
+    <string name="usage_stats_permission_text">Access to Usage Stats Data</string>
+    <string name="ignore_battery_optimization_permission_text">Turn off battery optimization for InsightsX</string>
 
 </resources>

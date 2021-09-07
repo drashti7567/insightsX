@@ -5,7 +5,6 @@ import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Bundle
 import android.util.Log
-import com.example.diceroller.utils.PermissionsUtil
 
 class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
 
@@ -26,7 +25,7 @@ class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
         if (++activityReferences == 1 && !isActivityChangingConfigurations) {
             // App enters foreground
             Log.d("TAG", "Foreground")
-            PermissionsUtil.checkPermissions(this)
+//            PermissionsUtil.checkPermissions(this)
 
         }
     }

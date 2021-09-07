@@ -8,7 +8,7 @@ import com.example.diceroller.R
 import com.example.diceroller.constants.FileNameConstants
 import com.example.diceroller.utils.FileUtils
 
-class SystemLogsActivity: AppCompatActivity() {
+class SystemLogsActivity: BaseActivity() {
     private fun parseLogs(systemLogsFileList: MutableList<String>): ArrayList<String> {
         val systemLogsList: ArrayList<String> = ArrayList()
         systemLogsFileList.forEach{

@@ -48,7 +48,7 @@ object PermissionsUtil {
 
     }
 
-    private fun checkIfAppHasUsageAccessPermission(context: Context): Boolean {
+    fun checkIfAppHasUsageAccessPermission(context: Context): Boolean {
         val appOps =
             context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(
@@ -58,7 +58,7 @@ object PermissionsUtil {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    private fun isAccessibilityServiceEnabled(
+    fun isAccessibilityServiceEnabled(
         context: Context,
         serviceName: String
     ): Boolean {
@@ -76,7 +76,7 @@ object PermissionsUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun checkIsIgnoringBatteryOptimizations(context: Context): Boolean {
+    fun checkIsIgnoringBatteryOptimizations(context: Context): Boolean {
         val powerManager: PowerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         return powerManager.isIgnoringBatteryOptimizations(context.packageName)
     }

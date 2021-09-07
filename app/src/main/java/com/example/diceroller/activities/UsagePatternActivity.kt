@@ -15,7 +15,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
-class UsagePatternActivity : AppCompatActivity() {
+class UsagePatternActivity : BaseActivity() {
 
     private fun convertMapToList(mapOfTotalAppTime: HashMap<String, Long>): ArrayList<String> {
         val sumTimeArrayList = ArrayList<String>()
