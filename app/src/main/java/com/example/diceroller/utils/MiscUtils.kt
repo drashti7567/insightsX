@@ -1,16 +1,18 @@
 package com.example.diceroller.utils
 
-import android.os.Build
 import android.annotation.TargetApi
 import android.app.AppOpsManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Process
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+
 
 object MiscUtils {
 
@@ -30,6 +32,11 @@ object MiscUtils {
             Process.myUid(), context.packageName
         )
         return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    fun isNetworkConnected(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm!!.activeNetworkInfo != null && cm.activeNetworkInfo!!.isConnected
     }
 
     fun getApplicationNameFromPackage(

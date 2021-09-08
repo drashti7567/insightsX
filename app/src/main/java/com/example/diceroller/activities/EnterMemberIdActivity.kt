@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import com.example.diceroller.R
+import com.example.diceroller.constants.ApiUrlConstants
 import com.example.diceroller.utils.HttpUtils
 import com.example.diceroller.utils.SharedPreferencesUtils
 import com.google.android.material.textfield.TextInputEditText
@@ -51,7 +52,7 @@ class EnterMemberIdActivity: BaseActivity() {
         val memberId: String = memberIdText?.text.toString()
         val context = this;
 
-        HttpUtils.get("api/members/checkMemberExists/${memberId}", RequestParams(), object : JsonHttpResponseHandler() {
+        HttpUtils.get("${ApiUrlConstants.checkMemberExists}${memberId}", RequestParams(), object : JsonHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<Header?>?, response: JSONObject) {
                 try {
                     val serverResp = JSONObject(response.toString())
@@ -67,10 +68,6 @@ class EnterMemberIdActivity: BaseActivity() {
                 catch (e: JSONException) {
                     e.printStackTrace()
                 }
-            }
-
-            override fun onSuccess(statusCode: Int, headers: Array<Header?>?, timeline: JSONArray?) {
-                // Pull out the first event on the public timeline
             }
         })
     }

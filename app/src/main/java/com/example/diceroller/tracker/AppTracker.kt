@@ -3,14 +3,25 @@ package com.example.diceroller.tracker
 import android.app.KeyguardManager
 import android.content.Context
 import android.util.Log
+import com.example.diceroller.constants.ApiUrlConstants
 import com.example.diceroller.detectors.AppChecker
 import com.example.diceroller.constants.AppNameConstants
 import com.example.diceroller.constants.FileNameConstants
 import com.example.diceroller.database.AppDataDBHandler
+import com.example.diceroller.database.YoutubeDataDbHandler
 import com.example.diceroller.models.AppUsageQueueData
+import com.example.diceroller.models.YoutubeUsageQueueData
 import com.example.diceroller.utils.FileUtils
+import com.example.diceroller.utils.HttpUtils
 import com.example.diceroller.utils.MiscUtils
+import com.example.diceroller.utils.SharedPreferencesUtils
+import com.loopj.android.http.AsyncHttpResponseHandler
+import cz.msebera.android.httpclient.Header
+import cz.msebera.android.httpclient.entity.StringEntity
 import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
@@ -120,6 +131,61 @@ object AppTracker {
         }
         val dbHandler = AppDataDBHandler(context)
         dbHandler.addMultipleAppData(appUsageList)
+        this.sendAppDataToServer(context)
+    }
+
+    private fun sendAppDataToServer(context: Context) {
+
+        val appTrackerContext = this;
+
+        val dbHelper = AppDataDBHandler(context)
+        val appDataList: ArrayList<AppUsageQueueData> = dbHelper.viewAppData()
+
+        val entity: StringEntity = appTrackerContext.createPostRequestBody(context, appDataList)
+
+        HttpUtils.post(context, ApiUrlConstants.addAppDataToServer, entity, "application/json",
+            object: AsyncHttpResponseHandler(true) {
+
+                override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                    try {
+                        val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
+                        if (serverResp.get("success") == true) {
+                            dbHelper.deleteMultipleAppData(appDataList)
+                        }
+                    }
+                    catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                }
+                override fun onFailure(
+                    statusCode: Int,
+                    headers: Array<out Header>?,
+                    responseBody: ByteArray?,
+                    error: Throwable?) {
+                    Log.d("Error", error.toString() + " " + responseBody.toString())
+                }
+            })
+    }
+
+    private fun createPostRequestBody(context: Context,
+                                      appDataList: ArrayList<AppUsageQueueData>): StringEntity {
+        val requestObj = JSONObject()
+        requestObj.put("memberId", SharedPreferencesUtils.getMemberId(context))
+
+        val usageDataArray = JSONArray()
+
+        appDataList.forEach { data ->
+            val usageObj = JSONObject()
+            usageObj.put("appName", data.appName)
+            usageObj.put("packageName", data.appPackageName)
+            usageObj.put("day", data.dayOfWeek)
+            usageObj.put("endTime", data.endTime)
+            usageObj.put("startTime", data.startTime)
+            usageDataArray.put(usageObj)
+        }
+        requestObj.put("usageData", usageDataArray)
+
+        return StringEntity(requestObj.toString(), "UTF-8")
     }
 
     fun onDestroy(context: Context) {

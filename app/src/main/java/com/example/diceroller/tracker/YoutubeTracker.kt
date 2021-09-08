@@ -7,17 +7,26 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.example.diceroller.activities.LifeCycleActivity
-import com.example.diceroller.constants.FileNameConstants
+import com.example.diceroller.constants.ApiUrlConstants
 import com.example.diceroller.constants.YoutubeContentType
 import com.example.diceroller.constants.YoutubeViewIdConstants
-import com.example.diceroller.database.AppDataDBHandler
 import com.example.diceroller.database.YoutubeDataDbHandler
-import com.example.diceroller.models.AppUsageQueueData
 import com.example.diceroller.models.YoutubeUsageQueueData
 import com.example.diceroller.utils.AudioManagerUtils
-import com.example.diceroller.utils.FileUtils
+import com.example.diceroller.utils.HttpUtils
 import com.example.diceroller.utils.MiscUtils
 import com.example.diceroller.utils.NodeInfoUtils
+import com.example.diceroller.utils.SharedPreferencesUtils
+import com.loopj.android.http.AsyncHttpResponseHandler
+import com.loopj.android.http.JsonHttpResponseHandler
+import cz.msebera.android.httpclient.Header
+import cz.msebera.android.httpclient.entity.StringEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
@@ -41,7 +50,7 @@ object YoutubeTracker {
             }
             else if (this.youtubeUsageQueue.size > 0) {
                 if (usageElement.contentType != this.youtubeUsageQueue.last().contentType) {
-                    if(this.youtubeUsageQueue.last().endTime == null)
+                    if (this.youtubeUsageQueue.last().endTime == null)
                         this.youtubeUsageQueue.last().endTime = MiscUtils.dateFormat.format(Date())
                     this.youtubeUsageQueue.addLast(usageElement)
                 }
@@ -117,8 +126,9 @@ object YoutubeTracker {
     }
 
     private fun isLiveVideoDuplicateEvent(): Boolean {
-        if (this.listOfViewIds.any{
-                mutableListOf(YoutubeViewIdConstants.LIVE_LABEL, YoutubeViewIdConstants.LIVE_CHAT_VEM).contains(it)}) {
+        if (this.listOfViewIds.any {
+                mutableListOf(YoutubeViewIdConstants.LIVE_LABEL, YoutubeViewIdConstants.LIVE_CHAT_VEM).contains(it)
+            }) {
             return true
         }
         return false
@@ -155,10 +165,67 @@ object YoutubeTracker {
         val dbHandler = YoutubeDataDbHandler(context)
         dbHandler.addMultipleYoutubeData(youtubeUsageList)
 
-        val data: ArrayList<YoutubeUsageQueueData> = dbHandler.viewYoutubeData()
-        data.forEach{data -> Log.d("YOUTUBE_DATA", "${data.contentType} ${data.videoName} ${data.videoChannelName}" +
-                "${data.startTime} ${data.endTime}")}
+        this.sendYoutubeDataToServer(context)
 
+    }
+
+    private fun sendYoutubeDataToServer(context: Context) {
+
+        val youtubeTrackerContext = this;
+
+//        CoroutineScope(Dispatchers.Default).launch {
+            val dbHelper = YoutubeDataDbHandler(context)
+            val youtubeDataList: ArrayList<YoutubeUsageQueueData> = dbHelper.viewYoutubeData()
+
+            val entity: StringEntity = youtubeTrackerContext.createPostRequestBody(context, youtubeDataList)
+
+            HttpUtils.post(context, ApiUrlConstants.addYoutubeDataToServer, entity, "application/json",
+                object: AsyncHttpResponseHandler(true) {
+
+                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                        try {
+                            val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
+                            if (serverResp.get("success") == true) {
+                                dbHelper.deleteMultipleAppData(youtubeDataList)
+                            }
+                        }
+                        catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    }
+                    override fun onFailure(
+                        statusCode: Int,
+                        headers: Array<out Header>?,
+                        responseBody: ByteArray?,
+                        error: Throwable?) {
+                        Log.d("Error", error.toString() + " " + responseBody.toString())
+                    }
+                })
+    }
+
+    private fun createPostRequestBody(context: Context,
+                                      youtubeDataList: ArrayList<YoutubeUsageQueueData>): StringEntity {
+        val requestObj = JSONObject()
+        requestObj.put("appName", "youtube")
+        requestObj.put("memberId", SharedPreferencesUtils.getMemberId(context))
+
+        val usageDataArray = JSONArray()
+
+        youtubeDataList.forEach { data ->
+            val usageObj = JSONObject()
+            usageObj.put("videoName", data.videoName)
+            usageObj.put("channelName", data.videoChannelName)
+            usageObj.put("adName", data.adName)
+            usageObj.put("adSkipped", data.adSkipped)
+            usageObj.put("contentType", data.contentType)
+            usageObj.put("day", data.dayOfWeek)
+            usageObj.put("endTime", data.endTime)
+            usageObj.put("startTime", data.startTime)
+            usageDataArray.put(usageObj)
+        }
+        requestObj.put("usageData", usageDataArray)
+
+        return StringEntity(requestObj.toString(), "UTF-8")
     }
 
     fun onDestroy(context: Context) {
