@@ -2,15 +2,18 @@ package com.example.diceroller.tracker
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.util.Log
 import com.example.diceroller.detectors.AppChecker
 import com.example.diceroller.constants.AppNameConstants
 import com.example.diceroller.constants.FileNameConstants
+import com.example.diceroller.database.AppDataDBHandler
 import com.example.diceroller.models.AppUsageQueueData
 import com.example.diceroller.utils.FileUtils
 import com.example.diceroller.utils.MiscUtils
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayDeque
+import kotlin.collections.ArrayList
 
 object AppTracker {
 
@@ -102,28 +105,21 @@ object AppTracker {
     }
 
     private fun writeAppUsageDataToFile(context: Context, isCalledFromDestroy: Boolean = false) {
-        var csvChunk: String = ""
+        val appUsageList: ArrayList<AppUsageQueueData> = ArrayList()
         while (this.appUsageQueue.size > 0) {
             val appUsageElement: AppUsageQueueData = this.appUsageQueue.first()
             if (appUsageElement.endTime != null || isCalledFromDestroy) {
 
                 if (isCalledFromDestroy) appUsageElement.endTime = MiscUtils.dateFormat.format(Date())
-                val csvRow: String =
-                    appUsageElement.appName + "," + appUsageElement.appPackageName + "," + appUsageElement.dayofWeek +
-                            "," + appUsageElement.startTime + "," + appUsageElement.endTime + "\n"
-                csvChunk += csvRow
+                appUsageList.add(appUsageElement)
                 this.appUsageQueue.removeFirst()
             }
             else {
                 break
             }
         }
-        FileUtils.writeFileOnInternalStorage(
-            context,
-            FileNameConstants.APP_USAGE_FILE_NAME,
-            csvChunk,
-            FileNameConstants.APP_USAGE_FILE_HEADERS
-        )
+        val dbHandler = AppDataDBHandler(context)
+        dbHandler.addMultipleAppData(appUsageList)
     }
 
     fun onDestroy(context: Context) {

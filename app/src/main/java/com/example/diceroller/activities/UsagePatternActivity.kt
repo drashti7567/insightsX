@@ -6,6 +6,7 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.diceroller.R
 import com.example.diceroller.constants.FileNameConstants
+import com.example.diceroller.database.AppDataDBHandler
 import com.example.diceroller.models.AppUsageQueueData
 import com.example.diceroller.models.SystemLogsData
 import com.example.diceroller.utils.FileUtils
@@ -47,23 +48,10 @@ class UsagePatternActivity : BaseActivity() {
 
     }
 
-    private fun parseCsvData(appUsageFileDataList: MutableList<String>): ArrayList<AppUsageQueueData> {
-        val appUsageList: ArrayList<AppUsageQueueData> = ArrayList()
-        appUsageFileDataList.removeAt(0)
-        appUsageFileDataList.forEach {
-            val splitData = it.split(",")
-            val queueElement = AppUsageQueueData(splitData[1], splitData[0], splitData[2], splitData[3], splitData[4])
-            appUsageList.add(queueElement)
-        }
-        return appUsageList
-
-    }
-
     private fun calculateTotalTimeOfEachApp() {
-        val appUsageFileDataList: MutableList<String> =
-            FileUtils.getFileContentAsList(this, FileNameConstants.APP_USAGE_FILE_NAME)
 
-        val appUsageList = this.parseCsvData(appUsageFileDataList)
+        val appDbHelper = AppDataDBHandler(this)
+        val appUsageList = appDbHelper.viewAppData()
 
         val mapOfAppAndUsageTime = this.getSumOfTotalAppUsage(appUsageList);
 

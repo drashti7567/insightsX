@@ -3,12 +3,16 @@ package com.example.diceroller.tracker
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.example.diceroller.activities.LifeCycleActivity
 import com.example.diceroller.constants.FileNameConstants
 import com.example.diceroller.constants.YoutubeContentType
 import com.example.diceroller.constants.YoutubeViewIdConstants
+import com.example.diceroller.database.AppDataDBHandler
+import com.example.diceroller.database.YoutubeDataDbHandler
+import com.example.diceroller.models.AppUsageQueueData
 import com.example.diceroller.models.YoutubeUsageQueueData
 import com.example.diceroller.utils.AudioManagerUtils
 import com.example.diceroller.utils.FileUtils
@@ -138,28 +142,23 @@ object YoutubeTracker {
     }
 
     fun writeYoutubeUsageDataToFile(context: Context) {
-        var csvChunk: String = ""
+        val youtubeUsageList: ArrayList<YoutubeUsageQueueData> = ArrayList()
         while (this.youtubeUsageQueue.size > 0) {
             val youtubeUsageElement: YoutubeUsageQueueData = this.youtubeUsageQueue.first()
             if (youtubeUsageElement.endTime == null) {
                 youtubeUsageElement.endTime = MiscUtils.dateFormat.format(Date())
             }
-            val csvRow: String =
-                youtubeUsageElement.contentType + "," +
-                        (youtubeUsageElement.videoName?.replace(",", "|") ?: "") + "," +
-                        (youtubeUsageElement.videoChannelName?.replace(",", "|") ?: "") + "," +
-                        youtubeUsageElement.dayOfWeek + "," +
-                        youtubeUsageElement.startTime + "," + youtubeUsageElement.endTime + "\n"
-            csvChunk += csvRow
+            youtubeUsageList.add(youtubeUsageElement)
             this.youtubeUsageQueue.removeFirst()
 
         }
-        FileUtils.writeFileOnInternalStorage(
-            context,
-            FileNameConstants.YOUTUBE_USAGE_FILE_NAME,
-            csvChunk,
-            FileNameConstants.YOUTUBE_USAGE_FILE_HEADERS
-        )
+        val dbHandler = YoutubeDataDbHandler(context)
+        dbHandler.addMultipleYoutubeData(youtubeUsageList)
+
+        val data: ArrayList<YoutubeUsageQueueData> = dbHandler.viewYoutubeData()
+        data.forEach{data -> Log.d("YOUTUBE_DATA", "${data.contentType} ${data.videoName} ${data.videoChannelName}" +
+                "${data.startTime} ${data.endTime}")}
+
     }
 
     fun onDestroy(context: Context) {

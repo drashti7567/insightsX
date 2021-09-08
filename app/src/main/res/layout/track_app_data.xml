@@ -35,36 +35,6 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/startButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@color/background_light_color"
-            android:text="@string/startButtonText"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/primary_layout_color"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/stopButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@color/background_light_color"
-            android:text="@string/stopButtonText"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/primary_layout_color"
-            android:textStyle="bold" />
-
-        <Button
             android:id="@+id/usagePatternButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
