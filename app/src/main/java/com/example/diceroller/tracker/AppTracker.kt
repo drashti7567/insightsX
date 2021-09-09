@@ -131,6 +131,7 @@ object AppTracker {
         }
         val dbHandler = AppDataDBHandler(context)
         dbHandler.addMultipleAppData(appUsageList)
+
         this.sendAppDataToServer(context)
     }
 
@@ -141,30 +142,34 @@ object AppTracker {
         val dbHelper = AppDataDBHandler(context)
         val appDataList: ArrayList<AppUsageQueueData> = dbHelper.viewAppData()
 
-        val entity: StringEntity = appTrackerContext.createPostRequestBody(context, appDataList)
+        if(appDataList.size > 50) {
 
-        HttpUtils.post(context, ApiUrlConstants.addAppDataToServer, entity, "application/json",
-            object: AsyncHttpResponseHandler(true) {
+            val entity: StringEntity = appTrackerContext.createPostRequestBody(context, appDataList)
 
-                override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                    try {
-                        val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
-                        if (serverResp.get("success") == true) {
-                            dbHelper.deleteMultipleAppData(appDataList)
+            HttpUtils.post(context, ApiUrlConstants.addAppDataToServer, entity, "application/json",
+                object : AsyncHttpResponseHandler(true) {
+
+                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                        try {
+                            val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
+                            if (serverResp.get("success") == true) {
+                                dbHelper.deleteMultipleAppData(appDataList)
+                            }
+                        }
+                        catch (e: JSONException) {
+                            e.printStackTrace()
                         }
                     }
-                    catch (e: JSONException) {
-                        e.printStackTrace()
+
+                    override fun onFailure(
+                        statusCode: Int,
+                        headers: Array<out Header>?,
+                        responseBody: ByteArray?,
+                        error: Throwable?) {
+                        Log.d("Error", error.toString() + " " + responseBody.toString())
                     }
-                }
-                override fun onFailure(
-                    statusCode: Int,
-                    headers: Array<out Header>?,
-                    responseBody: ByteArray?,
-                    error: Throwable?) {
-                    Log.d("Error", error.toString() + " " + responseBody.toString())
-                }
-            })
+                })
+        }
     }
 
     private fun createPostRequestBody(context: Context,
