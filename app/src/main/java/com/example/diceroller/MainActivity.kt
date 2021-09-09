@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.diceroller.activities.EnterMemberIdActivity
+import com.example.diceroller.activities.EntryPoint
 import com.example.diceroller.activities.SystemLogsActivity
 import com.example.diceroller.activities.TrackingAppDataActivity
 import com.example.diceroller.activities.UsagePatternActivity
@@ -30,18 +31,17 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         Handler(Looper.getMainLooper()).postDelayed({
-//            PermissionsUtil.checkPermissions(this)
-            val startTrackingAppDataActivity: Intent = Intent(this.applicationContext, EnterMemberIdActivity::class.java)
+            val startTrackingAppDataActivity: Intent =
+                Intent(this.applicationContext, EntryPoint::class.java)
             startActivity(startTrackingAppDataActivity)
             this.finish()
-        }, 2500)
+        }, 1000)
 
         this.registerReceiverForPowerSaver(this)
     }
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                     if (PowerManagerUtils.checkIfPowerSaverIsOn(mainActivity)) ", Power Saver ON" else ", Power Saver OFF"
                 FileUtils.writeFileOnInternalStorage(
                     mainActivity, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
-                     MiscUtils.dateFormat.format(Date()) + systemLogDesc + "\n",
+                    MiscUtils.dateFormat.format(Date()) + systemLogDesc + "\n",
                     FileNameConstants.SYSTEM_LOGS_FILE_HEADERS
                 )
             }

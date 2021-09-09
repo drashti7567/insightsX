@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:title="@string/pemissions_header"
+        app:title="@string/permissions_header"
         app:titleMarginStart="36dp"
         app:titleTextColor="@color/background_light_color" />
 

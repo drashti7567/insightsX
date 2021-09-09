@@ -11,13 +11,21 @@
     <string name="enter_member_id_toolbar_text">Enter Member ID</string>
     <string name="member_id">Member ID</string>
     <string name="enter_member_id_input_hint">enter allotted member ID</string>
-    <string name="tems_of_service_text">I agree to InsightsX Terms of Service</string>
+    <string name="terms_of_service_text">I agree to InsightsX Terms of Service</string>
     <string name="privacy_policy_text">I agree to the InsightsX Privacy Policy</string>
     <string name="submit">SUMBIT</string>
     <string name="footer_text">InsightsX 2021</string>
-    <string name="pemissions_header">Permissions</string>
+    <string name="permissions_header">Permissions</string>
     <string name="accessibility_service_permission_text">Access to InsightsX accessibility service</string>
     <string name="usage_stats_permission_text">Access to Usage Stats Data</string>
     <string name="ignore_battery_optimization_permission_text">Turn off battery optimization for InsightsX</string>
+    <string name="signup">Sign Up</string>
+    <string name="sign_up_toolbar_text">Sign Up</string>
+    <string name="first_name_input_hint">First Name</string>
+    <string name="last_name_input_hint">Last Name</string>
+    <string name="email_input_hint">Email</string>
+    <string name="phone_number_input_hint">Phone Number</string>
+    <string name="profession_input_hint">Profession</string>
+    <string name="birthdate_input_hint">Birth Date</string>
 
 </resources>

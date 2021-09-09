@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:layout_marginTop="48dp"
-        android:text="@string/tems_of_service_text"
+        android:text="@string/terms_of_service_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/member_id_input_layout" />
 
