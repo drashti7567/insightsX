@@ -29,5 +29,6 @@
     <string name="birthdate_input_hint">Birth Date</string>
     <string name="income_group">Income Group</string>
     <string name="gender_hint">Gender</string>
+    <string name="you_are_all_set">You are all set !!</string>
 
 </resources>

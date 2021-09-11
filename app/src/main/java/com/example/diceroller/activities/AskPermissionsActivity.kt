@@ -31,8 +31,8 @@ class AskPermissionsActivity : BaseActivity() {
         val isIgnoringBatteryOptimization = PermissionsUtil.checkIsIgnoringBatteryOptimizations(this)
 
         if(usageStatsAccess && accessibilityServiceOn && isIgnoringBatteryOptimization) {
-            val trackingAppDataActivity: Intent = Intent(this, TrackingAppDataActivity::class.java)
-            startActivity(trackingAppDataActivity)
+            val finalPageActivity: Intent = Intent(this, FinalPageActivity::class.java)
+            startActivity(finalPageActivity)
             this.finish()
         }
 
