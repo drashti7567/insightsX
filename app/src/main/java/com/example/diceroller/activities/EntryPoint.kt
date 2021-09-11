@@ -9,14 +9,16 @@ import com.example.diceroller.utils.SharedPreferencesUtils
 
 class EntryPoint: BaseActivity(), View.OnClickListener {
 
-    var enterMemberId: Button? = null
-    var signUpButton: Button? = null
+    private var enterMemberId: Button? = null
+    private var signUpButton: Button? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if(SharedPreferencesUtils.getMemberId(this) != null)
+            this.navigateToAskPermissionsActivity()
+
         setContentView(R.layout.app_entry_options)
         this.setupUI(findViewById(R.id.parent))
 
@@ -36,5 +38,11 @@ class EntryPoint: BaseActivity(), View.OnClickListener {
             activityIntent = Intent(this, SignUpActivity::class.java)
 
         startActivity(activityIntent)
+    }
+
+    private fun navigateToAskPermissionsActivity() {
+        val startAskPermissionsActivity: Intent = Intent(this, AskPermissionsActivity::class.java)
+        startActivity(startAskPermissionsActivity)
+        this.finish()
     }
 }

@@ -75,6 +75,7 @@ class EnterMemberIdActivity: BaseActivity() {
     private fun navigateToAskPermissionsActivity() {
         val startAskPermissionsActivity: Intent = Intent(this, AskPermissionsActivity::class.java)
         startActivity(startAskPermissionsActivity)
+        this.finish()
     }
 
 }

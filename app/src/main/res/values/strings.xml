@@ -27,5 +27,6 @@
     <string name="phone_number_input_hint">Phone Number</string>
     <string name="profession_input_hint">Profession</string>
     <string name="birthdate_input_hint">Birth Date</string>
+    <string name="income_group">Income Group</string>
 
 </resources>
