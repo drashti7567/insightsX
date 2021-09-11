@@ -9,8 +9,8 @@ import com.example.diceroller.utils.SharedPreferencesUtils
 
 class EntryPoint: BaseActivity(), View.OnClickListener {
 
-    private var enterMemberId: Button? = null
-    private var signUpButton: Button? = null
+    var enterMemberId: Button? = null
+    var signUpButton: Button? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
