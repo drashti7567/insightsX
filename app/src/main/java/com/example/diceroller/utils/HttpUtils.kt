@@ -1,6 +1,8 @@
 package com.example.diceroller.utils
 
 import android.content.Context
+import androidx.lifecycle.Lifecycle
+import com.example.diceroller.activities.LifeCycleActivity
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import com.loopj.android.http.RequestParams
@@ -8,7 +10,9 @@ import cz.msebera.android.httpclient.entity.StringEntity
 
 object HttpUtils {
 
-    private const val BASE_URL = "http://localhost:8080/"
+    private val BASE_URL =
+        PropertyReaderUtils.getMyProperties("config.properties",
+            LifeCycleActivity.context!!)!!["server.url"].toString()
 
     private val client: AsyncHttpClient = AsyncHttpClient()
 

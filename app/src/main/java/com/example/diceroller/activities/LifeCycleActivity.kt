@@ -3,6 +3,7 @@ package com.example.diceroller.activities
 import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 
@@ -10,6 +11,7 @@ class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
 
     companion object {
         var allowWindowContentChangeEvent: Boolean = true
+        var context: Context? = null
     }
 
     var activityReferences: Int = 0
@@ -18,13 +20,14 @@ class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
+        context = applicationContext
     }
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
     override fun onActivityStarted(activity: Activity) {
         if (++activityReferences == 1 && !isActivityChangingConfigurations) {
             // App enters foreground
-            Log.d("TAG", "Foreground")
+//            Log.d("TAG", "Foreground")
 //            PermissionsUtil.checkPermissions(this)
 
         }
