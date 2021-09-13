@@ -3,15 +3,10 @@ package com.example.insightsX.activities
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.appcompat.app.AppCompatActivity
 import com.example.insightsX.R
-import com.example.insightsX.constants.FileNameConstants
 import com.example.insightsX.database.AppDataDBHandler
 import com.example.insightsX.models.AppUsageQueueData
-import com.example.insightsX.models.SystemLogsData
-import com.example.insightsX.utils.FileUtils
 import com.example.insightsX.utils.MiscUtils
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -50,8 +45,8 @@ class UsagePatternActivity : BaseActivity() {
 
     private fun calculateTotalTimeOfEachApp() {
 
-        val appDbHelper = AppDataDBHandler(this)
-        val appUsageList = appDbHelper.viewAppData()
+        val appDbHelper = AppDataDBHandler(this).getInstance(this)
+        val appUsageList = appDbHelper!!.viewAppData()
 
         val mapOfAppAndUsageTime = this.getSumOfTotalAppUsage(appUsageList);
 

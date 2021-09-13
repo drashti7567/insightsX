@@ -125,8 +125,8 @@ object AppTracker {
                 break
             }
         }
-        val dbHandler = AppDataDBHandler(context)
-        dbHandler.addMultipleAppData(appUsageList)
+        val dbHandler = AppDataDBHandler(context).getInstance(context)
+        dbHandler!!.addMultipleAppData(appUsageList)
 
         this.sendAppDataToServer(context)
     }
@@ -135,8 +135,8 @@ object AppTracker {
 
         val appTrackerContext = this;
 
-        val dbHelper = AppDataDBHandler(context)
-        val appDataList: ArrayList<AppUsageQueueData> = dbHelper.viewAppData()
+        val dbHelper = AppDataDBHandler(context).getInstance(context)
+        val appDataList: ArrayList<AppUsageQueueData> = dbHelper!!.viewAppData()
 
         if(appDataList.size > 50) {
 

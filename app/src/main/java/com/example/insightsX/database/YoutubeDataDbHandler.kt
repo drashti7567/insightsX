@@ -20,6 +20,18 @@ class YoutubeDataDbHandler(context: Context): DBHelper(context) {
     private val START_TIME: String = "startTime"
     private val END_TIME: String = "endTime"
 
+    private var dbInstance: YoutubeDataDbHandler? = null
+
+    fun getInstance(context: Context): YoutubeDataDbHandler? {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        if (dbInstance == null) {
+            dbInstance = YoutubeDataDbHandler(context.applicationContext)
+        }
+        return dbInstance
+    }
+
     fun addYoutubeData(youtubeDataObj: YoutubeUsageQueueData): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
