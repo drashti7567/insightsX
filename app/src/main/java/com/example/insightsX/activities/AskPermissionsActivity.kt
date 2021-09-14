@@ -43,7 +43,7 @@ class AskPermissionsActivity : BaseActivity() {
             accessibilityServiceOn)
 
         this.showDialogs(
-            findViewById(R.id.battery_optimization_checkbox), "Ignore Battery Optimization",
+            findViewById(R.id.battery_optimization_checkbox ), "Ignore Battery Optimization",
             "Please Ignore battery optimization for InsightsX app",
             Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
             isIgnoringBatteryOptimization)

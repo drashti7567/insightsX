@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 
 object SharedPreferencesUtils {
 
-    private const val MEMBER_ID = "memberId"
+    private const val MEMBER_ID = ""
 
     fun getSharedPreferences(ctx: Context?): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(ctx)

@@ -12,11 +12,12 @@ class EntryPoint: BaseActivity(), View.OnClickListener {
     var enterMemberId: Button? = null
     var signUpButton: Button? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(SharedPreferencesUtils.getMemberId(this) != null)
+        if(SharedPreferencesUtils.getMemberId(this) != null ||
+            SharedPreferencesUtils.getMemberId(this)!!.isNotEmpty() ||
+                SharedPreferencesUtils.getMemberId(this)!!.isNotBlank())
             this.navigateToAskPermissionsActivity()
 
         setContentView(R.layout.app_entry_options)
