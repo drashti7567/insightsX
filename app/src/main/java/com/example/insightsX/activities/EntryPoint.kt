@@ -15,8 +15,8 @@ class EntryPoint: BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(SharedPreferencesUtils.getMemberId(this) != null ||
-            SharedPreferencesUtils.getMemberId(this)!!.isNotEmpty() ||
+        if(SharedPreferencesUtils.getMemberId(this) != null &&
+            SharedPreferencesUtils.getMemberId(this)!!.isNotEmpty() &&
                 SharedPreferencesUtils.getMemberId(this)!!.isNotBlank())
             this.navigateToAskPermissionsActivity()
 

@@ -142,7 +142,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
 
     private fun createSignUpRequestObj(): StringEntity {
         val requestObj = JSONObject()
-        requestObj.put("birthDate", this.birthDateInput?.text)
+        requestObj.put("birthDate", this.birthDateInput?.text.toString())
         requestObj.put("email", this.emailInput?.text)
         requestObj.put("gender", (findViewById<RadioButton>(genderRadioGroup!!.checkedRadioButtonId)).text)
         requestObj.put("incomeGroup", this.spinnerDropdown?.selectedItem.toString())
