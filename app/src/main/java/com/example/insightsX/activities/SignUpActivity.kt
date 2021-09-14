@@ -54,6 +54,11 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sign_up)
 
+        if(SharedPreferencesUtils.getMemberId(this) != null &&
+            SharedPreferencesUtils.getMemberId(this)!!.isNotEmpty() &&
+            SharedPreferencesUtils.getMemberId(this)!!.isNotBlank())
+            this.navigateToAskPermissionsActivity()
+
         this.addDatePickerForBirthDate()
         this.addIncomeGroupSpinnerDropdown()
         this.defineAllFormInputs()

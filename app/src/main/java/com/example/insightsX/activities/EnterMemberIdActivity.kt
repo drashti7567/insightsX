@@ -33,8 +33,11 @@ class EnterMemberIdActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(SharedPreferencesUtils.getMemberId(this) != null)
+        if(SharedPreferencesUtils.getMemberId(this) != null &&
+            SharedPreferencesUtils.getMemberId(this)!!.isNotEmpty() &&
+            SharedPreferencesUtils.getMemberId(this)!!.isNotBlank())
             this.navigateToAskPermissionsActivity()
+
         setContentView(R.layout.enter_member_id)
         this.setupUI(findViewById(R.id.parent))
 
