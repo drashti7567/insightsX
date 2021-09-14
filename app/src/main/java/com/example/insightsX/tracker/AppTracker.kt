@@ -138,7 +138,8 @@ object AppTracker {
         val dbHelper = AppDataDBHandler(context).getInstance(context)
         val appDataList: ArrayList<AppUsageQueueData> = dbHelper!!.viewAppData()
 
-        if(appDataList.size > 50) {
+        // TODO: increase this rows in actual production
+        if(appDataList.size > 10) {
 
             val entity: StringEntity = appTrackerContext.createPostRequestBody(context, appDataList)
 
