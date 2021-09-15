@@ -6,6 +6,7 @@ import android.util.Log
 import com.example.insightsX.constants.ApiUrlConstants
 import com.example.insightsX.detectors.AppChecker
 import com.example.insightsX.constants.AppNameConstants
+import com.example.insightsX.constants.AppPackageNameConstants
 import com.example.insightsX.database.AppDataDBHandler
 import com.example.insightsX.models.AppUsageQueueData
 import com.example.insightsX.utils.HttpUtils
@@ -54,6 +55,7 @@ object AppTracker {
                 else {
                     // Discard if its quickstart launcher and place end time of last app.
                     if (currentApplicationName.equals(AppNameConstants.LAUNCHER_NAME, true) ||
+                        currentProcessPackageName.lowercase().contains("launcher") ||
                         currentApplicationName.equals(AppNameConstants.ANDROID_SYSTEM, true)) {
                         appTrackerContext.recordEndTimeOnDisruption(context, currentDate)
                     }
@@ -96,8 +98,12 @@ object AppTracker {
     }
 
     private fun writeAppSpecificQueueDataToFileOnAppEnd(appPackageName: String, context: Context) {
-        if (appPackageName.equals(AppNameConstants.YOUTUBE_PACKAGE_NAME, true)) {
+        if (appPackageName.equals(AppPackageNameConstants.youtubePackage, true)) {
             YoutubeTracker.writeYoutubeUsageDataToFile(context)
+        }
+
+        if (appPackageName.equals(AppPackageNameConstants.instagramPackage, true)) {
+            InstagramTracker.writeUsageDataToFile(context)
         }
     }
 

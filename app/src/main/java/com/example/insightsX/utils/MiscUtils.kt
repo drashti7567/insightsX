@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import com.example.insightsX.activities.LifeCycleActivity
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -43,7 +44,7 @@ object MiscUtils {
         applicationObject: Context,
         packageName: String?
     ): String {
-        val pm = applicationObject.packageManager
+        val pm = LifeCycleActivity.context!!.applicationContext.packageManager
         val ai: ApplicationInfo?
         ai = try {
             pm.getApplicationInfo(packageName!!, 0)

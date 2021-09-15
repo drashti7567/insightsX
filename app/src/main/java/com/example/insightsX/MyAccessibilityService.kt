@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.example.insightsX.activities.LifeCycleActivity
+import com.example.insightsX.constants.AppPackageNameConstants
 import com.example.insightsX.constants.FileNameConstants
 import com.example.insightsX.tracker.AppTracker
+import com.example.insightsX.tracker.InstagramTracker
 import com.example.insightsX.tracker.YoutubeTracker
 import com.example.insightsX.utils.FileUtils
 import com.example.insightsX.utils.MiscUtils
@@ -32,9 +34,9 @@ class MyAccessibilityService : AccessibilityService() {
     @SuppressLint("NewApi")
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
+        if (event.eventType == 4096) return
         if (event.eventType === AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED &&
             !LifeCycleActivity.allowWindowContentChangeEvent) return
-        if (event.eventType == 4096) return
         if (event.eventType == AccessibilityEvent.TYPE_ANNOUNCEMENT) return
 
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
@@ -47,11 +49,15 @@ class MyAccessibilityService : AccessibilityService() {
 
     private fun filterBasedOnAppPackageName(event: AccessibilityEvent) {
 
-        if (event.packageName != null && event.packageName.equals("com.google.android.youtube")) {
+        if (event.packageName != null && event.packageName.equals(AppPackageNameConstants.youtubePackage)) {
             if(event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
                 return
             }
             YoutubeTracker.onYoutubeEventReceived(event, this)
+        };
+
+        if (event.packageName != null && event.packageName.equals(AppPackageNameConstants.instagramPackage)) {
+            InstagramTracker.onEventReceived(event, this)
         };
     }
 

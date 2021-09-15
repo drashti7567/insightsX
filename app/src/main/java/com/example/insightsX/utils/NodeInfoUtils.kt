@@ -34,13 +34,11 @@ object NodeInfoUtils {
     fun getListOfViewIds(nodeInfo: AccessibilityNodeInfo?, listOfViewIds: MutableList<String>,
                                  mapOfViewIdsWithText: HashMap<String, String>) {
         if (nodeInfo == null) return
-        if (nodeInfo.viewIdResourceName != null) {
+        if (nodeInfo.viewIdResourceName != null && nodeInfo.viewIdResourceName.contains("/")) {
             listOfViewIds.add(nodeInfo.viewIdResourceName.split("/")[1])
             if (nodeInfo.text != null)
-                mapOfViewIdsWithText.put(
-                    nodeInfo.viewIdResourceName.split("/")[1],
-                    nodeInfo.text.toString()
-                )
+                mapOfViewIdsWithText[nodeInfo.viewIdResourceName.split("/")[1]] =
+                    mapOfViewIdsWithText[nodeInfo.viewIdResourceName.split("/")[1]] ?: "" + nodeInfo.text.toString()
         }
         for (i in 0 until nodeInfo.childCount) {
             getListOfViewIds(nodeInfo.getChild(i), listOfViewIds, mapOfViewIdsWithText)
