@@ -158,7 +158,7 @@ object YoutubeTracker {
             this.youtubeUsageQueue.removeFirst()
 
         }
-        val dbHandler = YoutubeDataDbHandler(context).getInstance(context)
+        val dbHandler = YoutubeDataDbHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
         dbHandler!!.addMultipleYoutubeData(youtubeUsageList)
 
         this.sendYoutubeDataToServer(context)
@@ -170,7 +170,7 @@ object YoutubeTracker {
         val youtubeTrackerContext = this;
 
 //        CoroutineScope(Dispatchers.Default).launch {
-            val dbHelper = YoutubeDataDbHandler(context).getInstance(context)
+            val dbHelper = YoutubeDataDbHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
             val youtubeDataList: ArrayList<YoutubeUsageQueueData> = dbHelper!!.viewYoutubeData()
 
             val entity: StringEntity = youtubeTrackerContext.createPostRequestBody(context, youtubeDataList)

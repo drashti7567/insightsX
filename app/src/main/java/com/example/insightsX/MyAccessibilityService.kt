@@ -71,6 +71,7 @@ class MyAccessibilityService : AccessibilityService() {
             FileNameConstants.SYSTEM_LOGS_FILE_HEADERS)
         YoutubeTracker.onDestroy(this)
         AppTracker.onDestroy(this)
+        InstagramTracker.onDestroy(this)
 
         // TODO: call server to notify that accessibility service has been turned off
     }

@@ -4,13 +4,23 @@ import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import com.example.insightsX.activities.LifeCycleActivity
+import com.example.insightsX.constants.ApiUrlConstants
 import com.example.insightsX.constants.InstagramContentType
 import com.example.insightsX.constants.InstagramViewIdConstants
 import com.example.insightsX.database.InstagramDataDbHandler
 import com.example.insightsX.models.InstagramUsageQueueData
 import com.example.insightsX.utils.AudioManagerUtils
+import com.example.insightsX.utils.HttpUtils
 import com.example.insightsX.utils.MiscUtils
 import com.example.insightsX.utils.NodeInfoUtils
+import com.example.insightsX.utils.SharedPreferencesUtils
+import com.loopj.android.http.AsyncHttpResponseHandler
+import cz.msebera.android.httpclient.Header
+import cz.msebera.android.httpclient.entity.StringEntity
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
@@ -121,9 +131,66 @@ object InstagramTracker {
             this.instaUsageQueue.removeFirst()
 
         }
-        val dbHandler = InstagramDataDbHandler(context).getInstance(context)
+        val dbHandler = InstagramDataDbHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
         dbHandler!!.addMultipleInstagramData(instaUsageList)
-//        this.sendDataToServer(context)
+        this.sendDataToServer(context)
+    }
+
+    private fun sendDataToServer(context: Context) {
+        val instagramTrackerContext = this;
+
+        val dbHelper = InstagramDataDbHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
+        val instagramDataList: ArrayList<InstagramUsageQueueData> = dbHelper!!.viewInstagramData()
+
+        val entity: StringEntity = instagramTrackerContext.createPostRequestBody(context, instagramDataList)
+
+        HttpUtils.post(context, ApiUrlConstants.addInstagramDataToServer, entity, "application/json",
+            object: AsyncHttpResponseHandler(true) {
+
+                override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                    try {
+                        val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
+                        if (serverResp.get("success") == true) {
+                            dbHelper.deleteMultipleAppData(instagramDataList)
+                        }
+                        else {
+                            Log.d("Error", serverResp.get("message").toString())
+                        }
+                    }
+                    catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                }
+                override fun onFailure(
+                    statusCode: Int,
+                    headers: Array<out Header>?,
+                    responseBody: ByteArray?,
+                    error: Throwable?) {
+                    Log.d("Error", error.toString() + " " + responseBody.toString())
+                }
+            })
+    }
+
+    private fun createPostRequestBody(context: Context,
+                                      instaDataList: ArrayList<InstagramUsageQueueData>): StringEntity {
+        val requestObj = JSONObject()
+        requestObj.put("appName", "instagram")
+        requestObj.put("memberId", SharedPreferencesUtils.getMemberId(context))
+
+        val usageDataArray = JSONArray()
+
+        instaDataList.forEach { data ->
+            val usageObj = JSONObject()
+            usageObj.put("contentType", data.contentType)
+            usageObj.put("day", data.dayOfWeek)
+            usageObj.put("endTime", data.endTime)
+            usageObj.put("startTime", data.startTime)
+            usageDataArray.put(usageObj)
+        }
+        requestObj.put("usageData", usageDataArray)
+
+        return StringEntity(requestObj.toString(), "UTF-8")
+
     }
 
     fun onDestroy(context: Context) {

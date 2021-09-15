@@ -58,9 +58,15 @@ class AppDataDBHandler(context: Context): DBHelper(context) {
             cursor = db.rawQuery(selectQuery, null)
         }catch (e: SQLiteException) {
             db.execSQL(selectQuery)
+            cursor!!.close()
+            db.close()
             return ArrayList()
         }
-        if(cursor == null && cursor?.count!! <= 0) return appUsageList
+        if(cursor == null || cursor?.count!! <= 0) {
+            cursor.close()
+            db.close()
+            return appUsageList
+        }
 
         if (cursor.moveToFirst()) {
             do {
@@ -76,6 +82,8 @@ class AppDataDBHandler(context: Context): DBHelper(context) {
                 appUsageList.add(appUsageQueueData)
             } while (cursor.moveToNext())
         }
+        cursor!!.close()
+        db.close()
 
         return appUsageList
     }

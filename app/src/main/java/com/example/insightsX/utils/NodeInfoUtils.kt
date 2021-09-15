@@ -37,8 +37,7 @@ object NodeInfoUtils {
         if (nodeInfo.viewIdResourceName != null && nodeInfo.viewIdResourceName.contains("/")) {
             listOfViewIds.add(nodeInfo.viewIdResourceName.split("/")[1])
             if (nodeInfo.text != null)
-                mapOfViewIdsWithText[nodeInfo.viewIdResourceName.split("/")[1]] =
-                    mapOfViewIdsWithText[nodeInfo.viewIdResourceName.split("/")[1]] ?: "" + nodeInfo.text.toString()
+                mapOfViewIdsWithText[nodeInfo.viewIdResourceName.split("/")[1]] = nodeInfo.text.toString()
         }
         for (i in 0 until nodeInfo.childCount) {
             getListOfViewIds(nodeInfo.getChild(i), listOfViewIds, mapOfViewIdsWithText)

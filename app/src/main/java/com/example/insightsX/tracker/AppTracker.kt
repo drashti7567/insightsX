@@ -3,6 +3,7 @@ package com.example.insightsX.tracker
 import android.app.KeyguardManager
 import android.content.Context
 import android.util.Log
+import com.example.insightsX.activities.LifeCycleActivity
 import com.example.insightsX.constants.ApiUrlConstants
 import com.example.insightsX.detectors.AppChecker
 import com.example.insightsX.constants.AppNameConstants
@@ -131,7 +132,7 @@ object AppTracker {
                 break
             }
         }
-        val dbHandler = AppDataDBHandler(context).getInstance(context)
+        val dbHandler = AppDataDBHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
         dbHandler!!.addMultipleAppData(appUsageList)
 
         this.sendAppDataToServer(context)
@@ -141,7 +142,7 @@ object AppTracker {
 
         val appTrackerContext = this;
 
-        val dbHelper = AppDataDBHandler(context).getInstance(context)
+        val dbHelper = AppDataDBHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
         val appDataList: ArrayList<AppUsageQueueData> = dbHelper!!.viewAppData()
 
         // TODO: increase this rows in actual production
