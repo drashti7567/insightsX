@@ -103,7 +103,10 @@ object YoutubeTracker {
         }
         else if (this.listOfViewIds.containsAll(YoutubeViewIdConstants.youtubeVideoIds)) {
             usageElement.contentType = YoutubeContentType.YOUTUBE_VIDEO
-            usageElement.videoName = this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_VIDEO_NAME_ID] ?: ""
+
+            usageElement.videoName = this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_VIDEO_NAME_ID] ?:
+            (YoutubeViewIdConstants.YOUTUBE_VIDEO_FULL_SCREEN_NAME_ID ?: "")
+
             usageElement.videoChannelName = this.mapOfViewIdsWithText[YoutubeViewIdConstants.YOUTUBE_CHANNEL_NAME] ?: ""
             Handler(Looper.getMainLooper()).postDelayed({
                 LifeCycleActivity.allowWindowContentChangeEvent = false

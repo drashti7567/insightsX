@@ -15,6 +15,7 @@ open class DBHelper(context: Context?): SQLiteOpenHelper(context,DATABASE_NAME,n
         private val DATABASE_NAME = "InsightsX"
         private val APP_DATA_TABLE = "appData"
         private val YOUTUBE_DATA_TABLE = "youtubeData"
+        private val INSTAGRAM_ADS_DATA_TABLE = "instagramAdsData"
         private val INSTAGRAM_DATA_TABLE = "instagramData"
     }
 
@@ -35,12 +36,18 @@ open class DBHelper(context: Context?): SQLiteOpenHelper(context,DATABASE_NAME,n
                     "(id integer primary key autoincrement, contentType text, dayOfWeek text," +
                     " startTime text,endTime text, synced integer default 0)"
         );
+        db?.execSQL(
+            "create table if not exists $INSTAGRAM_ADS_DATA_TABLE" +
+                    "(id integer primary key autoincrement, contentType text, adsCompany text," +
+                    " adsDescription text, adsDescription2 text, time text, synced integer default 0)"
+        );
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db!!.execSQL("DROP TABLE IF EXISTS $APP_DATA_TABLE" )
         db!!.execSQL("DROP TABLE IF EXISTS $YOUTUBE_DATA_TABLE" )
         db!!.execSQL("DROP TABLE IF EXISTS $INSTAGRAM_DATA_TABLE" )
+        db!!.execSQL("DROP TABLE IF EXISTS $INSTAGRAM_ADS_DATA_TABLE" )
         onCreate(db)
     }
 

@@ -66,6 +66,7 @@ object InstagramViewIdConstants {
     )
     const val browserTitle = "ig_browser_text_title"
     const val browserDescription = "ig_browser_text_subtitle"
+    const val LOADING = "Loading"
 
 
     val feedViewIds = mutableListOf<String>(
@@ -75,7 +76,7 @@ object InstagramViewIdConstants {
         "row_feed_comment_textview_layout"
     )
     const val postSponsoredViewId = "secondary_label"
-    const val companyAdNameViewId = "row_feed_photo_profile_name"
-    const val adDescriptionViewId = "row_feed_comment_textview_layout"
-    const val adDescription2ViewId = "row_feed_headline"
+    const val postCompanyAdNameViewId = "row_feed_photo_profile_name"
+    const val postAdDescriptionViewId = "row_feed_comment_textview_layout"
+    const val postAdDescription2ViewId = "row_feed_headline"
 }
