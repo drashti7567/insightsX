@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.insightsX.activities.EntryPoint
@@ -34,6 +36,17 @@ class MainActivity : AppCompatActivity() {
         }, 1000)
 
         this.registerReceiverForPowerSaver(this)
+        this.printLauncherName()
+    }
+
+    private fun printLauncherName() {
+        val localPackageManager = packageManager
+        val intent = Intent("android.intent.action.MAIN")
+        intent.addCategory("android.intent.category.HOME")
+        val str = localPackageManager.resolveActivity(
+            intent,
+            PackageManager.MATCH_DEFAULT_ONLY)!!.activityInfo.packageName
+        Log.d("Package Name:", str)
     }
 
 

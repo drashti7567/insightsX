@@ -52,7 +52,7 @@ class EnterMemberIdActivity: BaseActivity() {
     }
 
     private fun checkIfMemberExists() {
-        val memberId: String = memberIdText?.text.toString()
+        val memberId: String = memberIdText?.text.toString().lowercase()
         val context = this;
 
         HttpUtils.get("${ApiUrlConstants.checkMemberExists}${memberId}", RequestParams(), object : JsonHttpResponseHandler() {
@@ -64,7 +64,7 @@ class EnterMemberIdActivity: BaseActivity() {
                         context.navigateToAskPermissionsActivity()
                     }
                     else {
-                        Toast.makeText(context, "Member with MemberId $memberId is not registered in the system.",
+                        Toast.makeText(context, serverResp.get("message").toString(),
                             Toast.LENGTH_SHORT).show()
                     }
                 }

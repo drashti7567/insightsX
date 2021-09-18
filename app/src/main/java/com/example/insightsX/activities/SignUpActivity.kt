@@ -127,6 +127,9 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
                                     context.navigateToAskPermissionsActivity()
                                     context.finish()
                                 }
+                                else {
+                                    Toast.makeText(context, serverResp.get("message").toString(), Toast.LENGTH_SHORT).show()
+                                }
                             }
                             catch (e: JSONException) {
                                 e.printStackTrace()
