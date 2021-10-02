@@ -45,9 +45,8 @@ object MiscUtils {
         packageName: String?
     ): String {
         val pm = LifeCycleActivity.context!!.applicationContext.packageManager
-        val ai: ApplicationInfo?
-        ai = try {
-            pm.getApplicationInfo(packageName!!, 0)
+        val ai: ApplicationInfo? = try {
+            pm.getApplicationInfo(packageName!!, PackageManager.GET_META_DATA)
         } catch (e: PackageManager.NameNotFoundException) {
             null
         }
