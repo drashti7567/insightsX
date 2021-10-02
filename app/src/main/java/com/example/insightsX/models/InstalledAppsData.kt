@@ -3,5 +3,5 @@ package com.example.insightsX.models
 data class InstalledAppsData(
     var appName: String,
     var packageName: String,
-    var IsSystemPackage: Boolean
+    var isSystemPackage: Boolean
 )

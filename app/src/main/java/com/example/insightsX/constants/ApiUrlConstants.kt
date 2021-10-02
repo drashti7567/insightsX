@@ -6,4 +6,6 @@ object ApiUrlConstants {
     const val addInstagramDataToServer = "/api/instagramUsage/instagram/addNewUsageData"
     const val addAppDataToServer = "/api/appUsage/addNewGenericAppUsageData"
     const val selfSignUpMember = "api/members/selfSignUpMember/"
+
+    const val addInstalledAppsToDb = "/api/members/addInstalledAppsMember"
 }

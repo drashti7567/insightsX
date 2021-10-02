@@ -12,6 +12,7 @@ import com.example.insightsX.tracker.InstagramTracker
 import com.example.insightsX.tracker.YoutubeTracker
 import com.example.insightsX.utils.FileUtils
 import com.example.insightsX.utils.MiscUtils
+import java.lang.Exception
 import java.util.*
 
 class MyAccessibilityService : AccessibilityService() {
@@ -34,16 +35,21 @@ class MyAccessibilityService : AccessibilityService() {
     @SuppressLint("NewApi")
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        if (event.eventType == 4096) return
-        if (event.eventType === AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED &&
-            !LifeCycleActivity.allowWindowContentChangeEvent) return
-        if (event.eventType == AccessibilityEvent.TYPE_ANNOUNCEMENT) return
+        try {
+            if (event.eventType == 4096) return
+            if (event.eventType === AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED &&
+                !LifeCycleActivity.allowWindowContentChangeEvent) return
+            if (event.eventType == AccessibilityEvent.TYPE_ANNOUNCEMENT) return
 
-        if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
-            LifeCycleActivity.allowWindowContentChangeEvent = true
+            if (event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+                LifeCycleActivity.allowWindowContentChangeEvent = true
+            }
+
+            filterBasedOnAppPackageName(event)
         }
-
-        filterBasedOnAppPackageName(event)
+        catch(e: Exception) {
+            Log.d("Main Accessibility", e.stackTrace.toString())
+        }
 
     }
 
@@ -64,14 +70,19 @@ class MyAccessibilityService : AccessibilityService() {
     override fun onInterrupt() {}
 
     override fun onDestroy() {
-        super.onDestroy()
-        FileUtils.writeFileOnInternalStorage(
-            this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
-            MiscUtils.dateFormat.format(Date()) + ",Accessibility Service OFF \n",
-            FileNameConstants.SYSTEM_LOGS_FILE_HEADERS)
-        YoutubeTracker.onDestroy(this)
-        AppTracker.onDestroy(this)
-        InstagramTracker.onDestroy(this)
+        try {
+            super.onDestroy()
+            FileUtils.writeFileOnInternalStorage(
+                this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
+                MiscUtils.dateFormat.format(Date()) + ",Accessibility Service OFF \n",
+                FileNameConstants.SYSTEM_LOGS_FILE_HEADERS)
+            YoutubeTracker.onDestroy(this)
+            AppTracker.onDestroy(this)
+            InstagramTracker.onDestroy(this)
+        }
+        catch(e: Exception) {
+            Log.d("Main Accessibility", e.stackTrace.toString())
+        }
 
         // TODO: call server to notify that accessibility service has been turned off
     }

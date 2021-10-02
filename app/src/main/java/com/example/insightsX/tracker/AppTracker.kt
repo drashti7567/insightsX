@@ -20,6 +20,7 @@ import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
@@ -33,9 +34,14 @@ object AppTracker {
     lateinit var writeAppUsageToFileJob: Job
 
     fun startAppTracker(context: Context) {
-        this.appUsageQueue = ArrayDeque();
-        this.startJobForCheckingAppUpdates(context)
-        this.startJobToWriteToFile(context)
+        try {
+            this.appUsageQueue = ArrayDeque();
+            this.startJobForCheckingAppUpdates(context)
+            this.startJobToWriteToFile(context)
+        }
+        catch(e: Exception) {
+            Log.d("Insta Tracker", e.stackTrace.toString())
+        }
     }
 
     private fun startJobForCheckingAppUpdates(context: Context) {

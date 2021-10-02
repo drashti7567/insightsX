@@ -17,6 +17,7 @@ import com.example.insightsX.constants.FileNameConstants
 import com.example.insightsX.utils.FileUtils
 import com.example.insightsX.utils.MiscUtils
 import com.example.insightsX.utils.PowerManagerUtils
+import java.lang.Exception
 import java.util.*
 
 
@@ -28,15 +29,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            val startTrackingAppDataActivity: Intent =
-                Intent(this.applicationContext, EntryPoint::class.java)
-            startActivity(startTrackingAppDataActivity)
-            this.finish()
-        }, 1000)
+        try {
 
-        this.registerReceiverForPowerSaver(this)
-        this.printLauncherName()
+            Handler(Looper.getMainLooper()).postDelayed({
+                val startTrackingAppDataActivity: Intent =
+                    Intent(this.applicationContext, EntryPoint::class.java)
+                startActivity(startTrackingAppDataActivity)
+                this.finish()
+            }, 1000)
+
+            this.registerReceiverForPowerSaver(this)
+            this.printLauncherName()
+        }
+        catch(e: Exception) {
+            Log.d("Insta Tracker", e.stackTrace.toString())
+        }
     }
 
     private fun printLauncherName() {

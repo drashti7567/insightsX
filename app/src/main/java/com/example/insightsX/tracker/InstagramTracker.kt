@@ -23,6 +23,7 @@ import cz.msebera.android.httpclient.entity.StringEntity
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
@@ -50,15 +51,19 @@ object InstagramTracker {
          * @param context: context of application
          */
 
+        try {
+            val source: AccessibilityNodeInfo = event.source ?: return;
+            this.initializeViewIdsList()
 
-        val source: AccessibilityNodeInfo = event.source ?: return;
-        this.initializeViewIdsList()
+            val parent: AccessibilityNodeInfo? = NodeInfoUtils.getParent(source)
+            NodeInfoUtils.getListOfViewIds(parent, this.listOfViewIds, this.mapOfViewIdsWithText)
 
-        val parent: AccessibilityNodeInfo? = NodeInfoUtils.getParent(source)
-        NodeInfoUtils.getListOfViewIds(parent, this.listOfViewIds, this.mapOfViewIdsWithText)
-
-        val (usageElement, adsDataElement) = this.getUsageElement()
-        this.pushToQueue(usageElement, adsDataElement, context)
+            val (usageElement, adsDataElement) = this.getUsageElement()
+            this.pushToQueue(usageElement, adsDataElement, context)
+        }
+        catch(e: Exception) {
+            Log.d("Insta Tracker", e.stackTrace.toString())
+        }
     }
 
     private fun getUsageElement(): Pair<InstagramUsageQueueData, InstagramAdsData> {
@@ -216,9 +221,12 @@ object InstagramTracker {
 
     private fun writeAdsData() {
 
-        val instaAdsList: ArrayList<InstagramAdsData> = this.instaAdsQueue.toList() as ArrayList<InstagramAdsData>
-        val dbHandler = InstagramAdsDbHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
-        dbHandler!!.addMultipleAdData(instaAdsList)
+        if(this.instaAdsQueue.isNotEmpty()) {
+
+            val instaAdsList: ArrayList<InstagramAdsData> = this.instaAdsQueue.toList() as ArrayList<InstagramAdsData>
+            val dbHandler = InstagramAdsDbHandler(LifeCycleActivity.context!!).getInstance(LifeCycleActivity.context!!)
+            dbHandler!!.addMultipleAdData(instaAdsList)
+        }
     }
 
     private fun sendDataToServer(context: Context) {
