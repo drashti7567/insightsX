@@ -67,7 +67,7 @@ class FinalPageActivity : BaseActivity() {
                     SharedPreferencesUtils.getInstalledAppsUploaded(this) == false) {
 
             val installedAppsList: ArrayList<InstalledAppsData> =
-                InstalledAppsUtils.getInstalledApps(this.packageManager);
+                InstalledAppsUtils.getDetailedAppsAndServices(this.packageManager);
             val entity: StringEntity = this.createPostRequestBody(this, installedAppsList);
             val context = this
 

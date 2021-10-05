@@ -35,9 +35,9 @@ object InstalledAppsUtils {
     }
 
 
-    fun getDetailedAppsAndServices(packageManager: PackageManager): List<InstalledAppsData>? {
+    fun getDetailedAppsAndServices(packageManager: PackageManager): ArrayList<InstalledAppsData> {
         val pm = packageManager
-        val apps: MutableList<InstalledAppsData> = ArrayList<InstalledAppsData>()
+        val apps: ArrayList<InstalledAppsData> = ArrayList<InstalledAppsData>()
         val packs = packageManager.getInstalledPackages(0)
         //List<PackageInfo> packs = getPackageManager().getInstalledPackages(PackageManager.GET_PERMISSIONS);
         for (i in packs.indices) {
