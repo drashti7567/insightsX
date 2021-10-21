@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.widget.Toast
 import com.example.insightsX.activities.LifeCycleActivity
 import com.example.insightsX.constants.ApiUrlConstants
 import com.example.insightsX.constants.AppPackageNameConstants
@@ -19,6 +20,8 @@ import com.example.insightsX.utils.InstalledAppsUtils
 import com.example.insightsX.utils.MiscUtils
 import com.example.insightsX.utils.SharedPreferencesUtils
 import com.loopj.android.http.AsyncHttpResponseHandler
+import com.loopj.android.http.JsonHttpResponseHandler
+import com.loopj.android.http.RequestParams
 import cz.msebera.android.httpclient.Header
 import cz.msebera.android.httpclient.entity.StringEntity
 import org.json.JSONArray
@@ -37,6 +40,8 @@ class MyAccessibilityService : AccessibilityService() {
         // TODO: Empty file contents when start server integration
 
         this.uploadInstalledApps()
+
+        this.notifyServerThatServiceStartedOrDestroyed(true)
 
         FileUtils.writeFileOnInternalStorage(
             this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
@@ -83,6 +88,28 @@ class MyAccessibilityService : AccessibilityService() {
 
     override fun onInterrupt() {}
 
+    private fun notifyServerThatServiceStartedOrDestroyed(serviceOn: Boolean) {
+        /**
+         * Call backend API that tracks whether user's service is currently on or off.
+         */
+        val memberId: String = SharedPreferencesUtils.getMemberId(this)!!
+        val context = this;
+
+        val url: String = if (serviceOn) "${ApiUrlConstants.serviceTurnedOn}${memberId}"
+                            else "${ApiUrlConstants.serviceTurnedOff}${memberId}"
+
+        HttpUtils.get(url, RequestParams(), object : AsyncHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
+                Log.d("Success", serverResp.toString())
+            }
+            override fun onFailure(statusCode: Int, headers: Array<out Header>?,
+                                   responseBody: ByteArray?, error: Throwable?) {
+                Log.d("Error", error.toString() + " " + responseBody.toString())
+            }
+        })
+    }
+
     override fun onDestroy() {
         try {
             super.onDestroy()
@@ -98,7 +125,7 @@ class MyAccessibilityService : AccessibilityService() {
             Log.d("Main Accessibility", e.stackTrace.toString())
         }
 
-        // TODO: call server to notify that accessibility service has been turned off
+        this.notifyServerThatServiceStartedOrDestroyed(false)
     }
 
     private fun uploadInstalledApps() {
