@@ -28,7 +28,7 @@ object InstalledAppsUtils {
                         packageManager).toString()
                 }
                 installedPackagesList.add(InstalledAppsData(name, it.activityInfo
-                    .packageName, false))
+                    .packageName, null))
             }
         }
         return installedPackagesList
