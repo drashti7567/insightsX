@@ -10,25 +10,23 @@ import com.example.insightsX.models.InstalledAppsData
 
 object InstalledAppsUtils {
 
+    var packageAndAppNameMap = HashMap<String, String>();
+
     fun getInstalledApps(packageManager: PackageManager): ArrayList<InstalledAppsData> {
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
         val pkgAppsList: List<ResolveInfo> = packageManager.queryIntentActivities(mainIntent, 0)
 
         val installedPackagesList = ArrayList<InstalledAppsData>()
-        pkgAppsList.forEach{
+        pkgAppsList.forEach {
             if (it.activityInfo != null) {
                 val res: Resources = packageManager.getResourcesForApplication(it.activityInfo.applicationInfo)
                 // if activity label res is found
-                val name = if (it.activityInfo.labelRes != 0) {
-                    res.getString(it.activityInfo.labelRes)
-                }
-                else {
-                    it.activityInfo.applicationInfo.loadLabel(
-                        packageManager).toString()
-                }
-                installedPackagesList.add(InstalledAppsData(name, it.activityInfo
-                    .packageName, null))
+                val name = if (it.activityInfo.labelRes != 0) res.getString(it.activityInfo.labelRes)
+                    else it.activityInfo.applicationInfo.loadLabel(packageManager).toString()
+
+                this.packageAndAppNameMap[it.activityInfo.packageName] = name
+                installedPackagesList.add(InstalledAppsData(name, it.activityInfo.packageName, null))
             }
         }
         return installedPackagesList
@@ -43,10 +41,12 @@ object InstalledAppsUtils {
         for (i in packs.indices) {
             val p = packs[i]
             val appName = p.applicationInfo.loadLabel(packageManager).toString()
-            val icon = p.applicationInfo.loadIcon(packageManager)
-            val packages = p.applicationInfo.packageName
-            if (appName !== packages)
-                apps.add(InstalledAppsData(appName, packages, isSystemPackage(p)))
+//            val icon = p.applicationInfo.loadIcon(packageManager)
+            val packageName = p.applicationInfo.packageName
+            if (appName !== packageName)
+
+                this.packageAndAppNameMap.put(packageName, appName)
+                apps.add(InstalledAppsData(appName, packageName, isSystemPackage(p)))
         }
         return apps
     }

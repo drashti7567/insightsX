@@ -2,16 +2,28 @@ package com.example.insightsX
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.example.insightsX.activities.LifeCycleActivity
+import com.example.insightsX.constants.ApiUrlConstants
 import com.example.insightsX.constants.AppPackageNameConstants
 import com.example.insightsX.constants.FileNameConstants
+import com.example.insightsX.models.InstalledAppsData
 import com.example.insightsX.tracker.AppTracker
 import com.example.insightsX.tracker.InstagramTracker
 import com.example.insightsX.tracker.YoutubeTracker
 import com.example.insightsX.utils.FileUtils
+import com.example.insightsX.utils.HttpUtils
+import com.example.insightsX.utils.InstalledAppsUtils
 import com.example.insightsX.utils.MiscUtils
+import com.example.insightsX.utils.SharedPreferencesUtils
+import com.loopj.android.http.AsyncHttpResponseHandler
+import cz.msebera.android.httpclient.Header
+import cz.msebera.android.httpclient.entity.StringEntity
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.lang.Exception
 import java.util.*
 
@@ -23,6 +35,8 @@ class MyAccessibilityService : AccessibilityService() {
         Log.d("TAG", "Service Connected")
 
         // TODO: Empty file contents when start server integration
+
+        this.uploadInstalledApps()
 
         FileUtils.writeFileOnInternalStorage(
             this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
@@ -85,6 +99,66 @@ class MyAccessibilityService : AccessibilityService() {
         }
 
         // TODO: call server to notify that accessibility service has been turned off
+    }
+
+    private fun uploadInstalledApps() {
+        /**
+         * Function to upload the installed apps of the member's phone to server db
+         */
+        if(SharedPreferencesUtils.getInstalledAppsUploaded(this) != null &&
+            SharedPreferencesUtils.getInstalledAppsUploaded(this) == false) {
+
+            val installedAppsList: ArrayList<InstalledAppsData> =
+                InstalledAppsUtils.getInstalledApps(this.packageManager);
+            val entity: StringEntity = this.createPostRequestBody(this, installedAppsList);
+            val context = this
+
+            HttpUtils.post(this, ApiUrlConstants.addInstalledAppsToDb, entity, "application/json",
+                object: AsyncHttpResponseHandler(true) {
+
+                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
+                        try {
+                            val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
+                            if (serverResp.get("success") == true) {
+                                SharedPreferencesUtils.setInstalledAppsUploaded(context, true);
+                            }
+                            else {
+                                Log.d("Error", serverResp.get("message").toString())
+                            }
+                        }
+                        catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    }
+                    override fun onFailure(statusCode: Int, headers: Array<out Header>?,
+                                           responseBody: ByteArray?, error: Throwable?) {
+                        Log.d("Error", error.toString() + " " + responseBody.toString())
+                    }
+                })
+        }
+    }
+
+    private fun createPostRequestBody(context: Context,
+                                      installedAppsList: ArrayList<InstalledAppsData>): StringEntity {
+        /**
+         * Function to create String entity - json object for the post request
+         * to upload the installed apps list to server.
+         */
+        val requestObj = JSONObject()
+        requestObj.put("memberId", SharedPreferencesUtils.getMemberId(context))
+
+        val installedAppsArray = JSONArray()
+
+        installedAppsList.forEach { data ->
+            val usageObj = JSONObject()
+            usageObj.put("appName", data.appName)
+            usageObj.put("isSystemApp", data.isSystemPackage)
+            usageObj.put("packageName", data.packageName)
+            installedAppsArray.put(usageObj)
+        }
+        requestObj.put("installedAppsList", installedAppsArray)
+
+        return StringEntity(requestObj.toString(), "UTF-8")
     }
 
 }

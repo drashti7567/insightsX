@@ -31,7 +31,6 @@ class FinalPageActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.final_app_page)
-        this.uploadInstalledApps()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -57,65 +56,5 @@ class FinalPageActivity : BaseActivity() {
             super.onBackPressed()
         }
         return true;
-    }
-
-    private fun uploadInstalledApps() {
-        /**
-         * Function to upload the installed apps of the member's phone to server db
-         */
-        if(SharedPreferencesUtils.getInstalledAppsUploaded(this) != null &&
-                    SharedPreferencesUtils.getInstalledAppsUploaded(this) == false) {
-
-            val installedAppsList: ArrayList<InstalledAppsData> =
-                InstalledAppsUtils.getInstalledApps(this.packageManager);
-            val entity: StringEntity = this.createPostRequestBody(this, installedAppsList);
-            val context = this
-
-            HttpUtils.post(this, ApiUrlConstants.addInstalledAppsToDb, entity, "application/json",
-                object: AsyncHttpResponseHandler(true) {
-
-                    override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                        try {
-                            val serverResp = JSONObject(String(responseBody!!, Charsets.UTF_8))
-                            if (serverResp.get("success") == true) {
-                                SharedPreferencesUtils.setInstalledAppsUploaded(context, true);
-                            }
-                            else {
-                                Log.d("Error", serverResp.get("message").toString())
-                            }
-                        }
-                        catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                    }
-                    override fun onFailure(statusCode: Int, headers: Array<out Header>?,
-                                           responseBody: ByteArray?, error: Throwable?) {
-                        Log.d("Error", error.toString() + " " + responseBody.toString())
-                    }
-                })
-        }
-    }
-
-    private fun createPostRequestBody(context: Context,
-                                      installedAppsList: ArrayList<InstalledAppsData>): StringEntity {
-        /**
-         * Function to create String entity - json object for the post request
-         * to upload the installed apps list to server.
-         */
-        val requestObj = JSONObject()
-        requestObj.put("memberId", SharedPreferencesUtils.getMemberId(context))
-
-        val installedAppsArray = JSONArray()
-
-        installedAppsList.forEach { data ->
-            val usageObj = JSONObject()
-            usageObj.put("appName", data.appName)
-            usageObj.put("isSystemApp", data.isSystemPackage)
-            usageObj.put("packageName", data.packageName)
-            installedAppsArray.put(usageObj)
-        }
-        requestObj.put("installedAppsList", installedAppsArray)
-
-        return StringEntity(requestObj.toString(), "UTF-8")
     }
 }

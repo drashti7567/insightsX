@@ -24,6 +24,7 @@ object MiscUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
     }
 
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     fun hasUsageStatsPermission(context: Context): Boolean {
         val appOps =
@@ -47,10 +48,12 @@ object MiscUtils {
         val pm = LifeCycleActivity.context!!.applicationContext.packageManager
         val ai: ApplicationInfo? = try {
             pm.getApplicationInfo(packageName!!, PackageManager.GET_META_DATA)
-        } catch (e: PackageManager.NameNotFoundException) {
+        }
+        catch (e: PackageManager.NameNotFoundException) {
             null
         }
-        return (if (ai != null) pm.getApplicationLabel(ai) else "unknown") as String
+        return if (ai != null) pm.getApplicationLabel(ai).toString()
+                else InstalledAppsUtils.packageAndAppNameMap[packageName] ?: ""
     }
 
     fun printTypeOfEvent(event: AccessibilityEvent) {
