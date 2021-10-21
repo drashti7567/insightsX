@@ -5,9 +5,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 
-
-
-
 open class DBHelper(context: Context?): SQLiteOpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION) {
 
     companion object {

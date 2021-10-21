@@ -6,12 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.insightsX.R
-import com.example.insightsX.constants.FileNameConstants
-import com.example.insightsX.utils.FileUtils
-import com.example.insightsX.utils.IntentUtils
 
 class TrackingAppDataActivity: BaseActivity(), View.OnClickListener {
 

@@ -24,7 +24,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
 import cz.msebera.android.httpclient.entity.StringEntity
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat

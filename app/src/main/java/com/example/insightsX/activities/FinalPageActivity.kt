@@ -1,25 +1,10 @@
 package com.example.insightsX.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import com.example.insightsX.R
-import com.example.insightsX.constants.ApiUrlConstants
-import com.example.insightsX.models.InstalledAppsData
-import com.example.insightsX.models.YoutubeUsageQueueData
-import com.example.insightsX.utils.HttpUtils
-import com.example.insightsX.utils.InstalledAppsUtils
-import com.example.insightsX.utils.SharedPreferencesUtils
-import com.loopj.android.http.AsyncHttpResponseHandler
-import cz.msebera.android.httpclient.Header
-import cz.msebera.android.httpclient.entity.StringEntity
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class FinalPageActivity : BaseActivity() {
