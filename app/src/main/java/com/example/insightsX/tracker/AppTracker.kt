@@ -105,12 +105,17 @@ object AppTracker {
     }
 
     private fun writeAppSpecificQueueDataToFileOnAppEnd(appPackageName: String, context: Context) {
-        if (appPackageName.equals(AppPackageNameConstants.youtubePackage, true)) {
-            YoutubeTracker.writeYoutubeUsageDataToFile(context)
-        }
+        try {
+            if (appPackageName.equals(AppPackageNameConstants.youtubePackage, true)) {
+                YoutubeTracker.writeYoutubeUsageDataToFile(context)
+            }
 
-        if (appPackageName.equals(AppPackageNameConstants.instagramPackage, true)) {
-            InstagramTracker.writeUsageDataToFile(context)
+            if (appPackageName.equals(AppPackageNameConstants.instagramPackage, true)) {
+                InstagramTracker.writeUsageDataToFile(context)
+            }
+        }
+        catch (e: Exception) {
+            Log.d("Error", e.printStackTrace().toString())
         }
     }
 
