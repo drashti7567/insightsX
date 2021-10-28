@@ -32,22 +32,28 @@ import java.util.*
 
 class MyAccessibilityService : AccessibilityService() {
 
+    val TAG: String = "MyAccessibilityService"
 
     override fun onServiceConnected() {
-        super.onServiceConnected()
-        Log.d("TAG", "Service Connected")
+        try {
+            super.onServiceConnected()
+            Log.d("TAG", "Service Connected")
 
-        // TODO: Empty file contents when start server integration
+            // TODO: Empty file contents when start server integration
 
-        this.uploadInstalledApps()
+            this.uploadInstalledApps()
 
-        this.notifyServerThatServiceStartedOrDestroyed(true)
+            this.notifyServerThatServiceStartedOrDestroyed(true)
 
-        FileUtils.writeFileOnInternalStorage(
-            this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
-            MiscUtils.dateFormat.format(Date()) + ", Accessibility Service On\n",
-            FileNameConstants.SYSTEM_LOGS_FILE_HEADERS)
-        AppTracker.startAppTracker(this)
+            FileUtils.writeFileOnInternalStorage(
+                this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
+                MiscUtils.dateFormat.format(Date()) + ", Accessibility Service On\n",
+                FileNameConstants.SYSTEM_LOGS_FILE_HEADERS)
+            AppTracker.startAppTracker(this)
+        }
+        catch (e: Exception) {
+            Log.d(TAG, e.printStackTrace().toString())
+        }
     }
 
 
@@ -136,7 +142,7 @@ class MyAccessibilityService : AccessibilityService() {
             SharedPreferencesUtils.getInstalledAppsUploaded(this) == false) {
 
             val installedAppsList: ArrayList<InstalledAppsData> =
-                InstalledAppsUtils.getInstalledApps(this.packageManager);
+                InstalledAppsUtils.getInstalledApps(this.packageManager, this);
             val entity: StringEntity = this.createPostRequestBody(this, installedAppsList);
             val context = this
 
@@ -181,6 +187,7 @@ class MyAccessibilityService : AccessibilityService() {
             usageObj.put("appName", data.appName)
             usageObj.put("isSystemApp", data.isSystemPackage)
             usageObj.put("packageName", data.packageName)
+            usageObj.put("category", data.category)
             installedAppsArray.put(usageObj)
         }
         requestObj.put("installedAppsList", installedAppsArray)

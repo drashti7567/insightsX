@@ -4,4 +4,6 @@ data class InstalledAppsData(
     var appName: String,
     var packageName: String,
     var isSystemPackage: Boolean?
-)
+) {
+    var category: String? = null
+}
