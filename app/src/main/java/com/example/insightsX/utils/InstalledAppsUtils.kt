@@ -29,7 +29,7 @@ object InstalledAppsUtils {
                 val res: Resources = packageManager.getResourcesForApplication(it.activityInfo.applicationInfo)
                 // if activity label res is found
                 val name = if (it.activityInfo.labelRes != 0) res.getString(it.activityInfo.labelRes)
-                    else it.activityInfo.applicationInfo.loadLabel(packageManager).toString()
+                else it.activityInfo.applicationInfo.loadLabel(packageManager).toString()
                 this.packageAndAppNameMap[it.activityInfo.packageName] = name
 
                 val installedAppsData: InstalledAppsData =
@@ -37,13 +37,8 @@ object InstalledAppsUtils {
 
                 val applicationInfo: ApplicationInfo = it.activityInfo.applicationInfo;
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val appCategoryId: Int = applicationInfo.category;
-                    val category: String? =
-                        if (appCategoryId == -1) null
-                        else ApplicationInfo.getCategoryTitle(context, appCategoryId).toString();
-                    installedAppsData.category = category
-                }
+                val category: String? = AppCategoryUtils.getAppCategoryFromApplicationInfo(context, applicationInfo);
+                installedAppsData.category = category
 
                 installedPackagesList.add(installedAppsData)
             }
@@ -65,7 +60,7 @@ object InstalledAppsUtils {
             if (appName !== packageName)
 
                 this.packageAndAppNameMap.put(packageName, appName)
-                apps.add(InstalledAppsData(appName, packageName, isSystemPackage(p)))
+            apps.add(InstalledAppsData(appName, packageName, isSystemPackage(p)))
         }
         return apps
     }
