@@ -7,12 +7,14 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.res.Resources
-import android.os.Build
+import android.util.Log
 import com.example.insightsX.models.InstalledAppsData
 
 object InstalledAppsUtils {
 
     var packageAndAppNameMap = HashMap<String, String>();
+
+    private var currentLauncherName: String? = null;
 
     fun getInstalledApps(packageManager: PackageManager, context: Context): ArrayList<InstalledAppsData> {
         /**
@@ -67,5 +69,25 @@ object InstalledAppsUtils {
 
     private fun isSystemPackage(pkgInfo: PackageInfo): Boolean {
         return pkgInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0
+    }
+
+    fun getCurrentLauncherPackageName(context: Context): String {
+        /**
+         * Main Function to get the current launcher name of the android system to not record that time.
+         */
+        if (this.currentLauncherName.isNullOrBlank()) this.getCurrentLauncherPackageNameUtils(context)
+        return this.currentLauncherName!!;
+    }
+
+    private fun getCurrentLauncherPackageNameUtils(context: Context) {
+        /**
+         * Function to get the current launcher name of the android system to not record that time.
+         * THis function sets the global variable only one time.
+         */
+        val pm: PackageManager = context.packageManager;
+        val intent: Intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        val resolveInfo: ResolveInfo? = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        this.currentLauncherName =  resolveInfo!!.activityInfo.packageName ?: "";
     }
 }

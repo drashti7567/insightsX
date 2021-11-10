@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
@@ -127,7 +128,9 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
                                     context.finish()
                                 }
                                 else {
-                                    Toast.makeText(context, serverResp.get("message").toString(), Toast.LENGTH_SHORT).show()
+                                    context.runOnUiThread {
+                                        Toast.makeText(context, serverResp.get("message").toString(), Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                             }
                             catch (e: JSONException) {
@@ -155,7 +158,7 @@ class SignUpActivity : BaseActivity(), View.OnClickListener {
         requestObj.put("incomeGroup", this.spinnerDropdown?.selectedItem.toString())
         requestObj.put("name", "${this.firstNameInput?.text} ${this.lastNameInput?.text}")
         requestObj.put("phoneNumber", this.phoneNumberInput?.text)
-        requestObj.put("working Company", this.professionInput?.text)
+        requestObj.put("workingCompany", this.professionInput?.text)
 
         return StringEntity(requestObj.toString(), "UTF-8")
     }

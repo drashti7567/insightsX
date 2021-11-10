@@ -11,6 +11,7 @@ import com.example.insightsX.constants.AppPackageNameConstants
 import com.example.insightsX.database.AppDataDBHandler
 import com.example.insightsX.models.AppUsageQueueData
 import com.example.insightsX.utils.HttpUtils
+import com.example.insightsX.utils.InstalledAppsUtils
 import com.example.insightsX.utils.MiscUtils
 import com.example.insightsX.utils.SharedPreferencesUtils
 import com.loopj.android.http.AsyncHttpResponseHandler
@@ -61,7 +62,8 @@ object AppTracker {
                 }
                 else {
                     // Discard if its quickstart launcher and place end time of last app.
-                    if (currentApplicationName.equals(AppNameConstants.LAUNCHER_NAME, true) ||
+                    if (currentApplicationName.equals(
+                            InstalledAppsUtils.getCurrentLauncherPackageName(context), true) ||
                         currentProcessPackageName.lowercase().contains("launcher") ||
                         currentApplicationName.equals(AppNameConstants.ANDROID_SYSTEM, true)) {
                         appTrackerContext.recordEndTimeOnDisruption(context, currentDate)

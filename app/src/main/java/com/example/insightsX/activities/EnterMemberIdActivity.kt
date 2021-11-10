@@ -63,8 +63,11 @@ class EnterMemberIdActivity: BaseActivity() {
                         context.navigateToAskPermissionsActivity()
                     }
                     else {
-                        Toast.makeText(context, serverResp.get("message").toString(),
-                            Toast.LENGTH_SHORT).show()
+                        context.runOnUiThread {
+                            Toast.makeText(context, serverResp.get("message").toString(),
+                                Toast.LENGTH_SHORT).show()
+                        }
+
                     }
                 }
                 catch (e: JSONException) {
