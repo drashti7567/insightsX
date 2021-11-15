@@ -11,6 +11,7 @@ import android.os.Process
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.example.insightsX.activities.LifeCycleActivity
+import org.json.JSONArray
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -69,5 +70,12 @@ object MiscUtils {
             else -> eventTypeString = event.eventType.toString()
         }
         Log.d("eventType", eventTypeString)
+    }
+
+    fun convertJsonArrayToArray(json: JSONArray): Array<String> {
+        val list: Array<String> = Array(json.length()) {
+            json.get(it).toString()
+        }
+        return list
     }
 }

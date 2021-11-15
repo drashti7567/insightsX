@@ -10,4 +10,7 @@ object ApiUrlConstants {
     const val selfSignUpMember = "api/members/selfSignUpMember/"
 
     const val addInstalledAppsToDb = "api/members/addInstalledAppsMember"
+
+    const val statesListService = "api/address/states/"
+    const val citiesListService = "api/address/cities/"
 }

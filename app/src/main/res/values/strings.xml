@@ -27,8 +27,11 @@
     <string name="phone_number_input_hint">Phone Number</string>
     <string name="profession_input_hint">Profession</string>
     <string name="birthdate_input_hint">Birth Date</string>
-    <string name="income_group">Income Group</string>
+    <string name="income_group">Monthly Household Income</string>
     <string name="gender_hint">Gender</string>
     <string name="you_are_all_set">You are all set !!</string>
+    <string name="education_input_hint">Education</string>
+    <string name="state_input_hint">State</string>
+    <string name="city_input_hint">City</string>
 
 </resources>
