@@ -42,19 +42,11 @@ object MiscUtils {
         return cm!!.activeNetworkInfo != null && cm.activeNetworkInfo!!.isConnected
     }
 
-    fun getApplicationNameFromPackage(
-        applicationObject: Context,
-        packageName: String?
-    ): String {
-        val pm = LifeCycleActivity.context!!.applicationContext.packageManager
-        val ai: ApplicationInfo? = try {
-            pm.getApplicationInfo(packageName!!, PackageManager.GET_META_DATA)
-        }
-        catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
-        return if (ai != null) pm.getApplicationLabel(ai).toString()
-                else InstalledAppsUtils.packageAndAppNameMap[packageName] ?: ""
+    fun getApplicationNameFromPackage(applicationObject: Context, packageName: String?): String {
+        /**
+         * Function to get application name from package name
+         */
+        return InstalledAppsUtils.packageAndAppNameMap[packageName] ?: ""
     }
 
     fun printTypeOfEvent(event: AccessibilityEvent) {
