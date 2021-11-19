@@ -49,7 +49,7 @@ class MyAccessibilityService : AccessibilityService() {
                 this, FileNameConstants.SYSTEM_LOGS_FILE_NAME,
                 MiscUtils.dateFormat.format(Date()) + ", Accessibility Service On\n",
                 FileNameConstants.SYSTEM_LOGS_FILE_HEADERS)
-            AppTracker.startAppTracker(this)
+//            AppTracker.startAppTracker(this)
         }
         catch (e: Exception) {
             Log.d(TAG, e.printStackTrace().toString())
