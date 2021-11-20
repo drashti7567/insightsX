@@ -138,11 +138,12 @@ class MyAccessibilityService : AccessibilityService() {
         /**
          * Function to upload the installed apps of the member's phone to server db
          */
+        val installedAppsList: ArrayList<InstalledAppsData> =
+            InstalledAppsUtils.getInstalledApps(this.packageManager, this);
+
         if(SharedPreferencesUtils.getInstalledAppsUploaded(this) != null &&
             SharedPreferencesUtils.getInstalledAppsUploaded(this) == false) {
 
-            val installedAppsList: ArrayList<InstalledAppsData> =
-                InstalledAppsUtils.getInstalledApps(this.packageManager, this);
             val entity: StringEntity = this.createPostRequestBody(this, installedAppsList);
             val context = this
 

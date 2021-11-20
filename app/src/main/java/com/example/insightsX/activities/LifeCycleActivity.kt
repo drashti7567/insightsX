@@ -1,12 +1,16 @@
 package com.example.insightsX.activities
 
-import android.app.Activity
 import android.app.Application
-import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
-import android.os.Bundle
+import android.content.Intent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.example.insightsX.constants.ForegroundServiceConstants
+import com.example.insightsX.services.AppTrackerService
 
-class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
+class LifeCycleActivity : Application(), LifecycleObserver {
 
     companion object {
         var allowWindowContentChangeEvent: Boolean = true
@@ -18,27 +22,16 @@ class LifeCycleActivity : Application(), ActivityLifecycleCallbacks {
 
     override fun onCreate() {
         super.onCreate()
-        registerActivityLifecycleCallbacks(this)
         context = applicationContext
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this);
     }
 
-    override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
-    override fun onActivityStarted(activity: Activity) {
-        if (++activityReferences == 1 && !isActivityChangingConfigurations) {
-            // App enters foreground
-//            Log.d("TAG", "Foreground")
-//            PermissionsUtil.checkPermissions(this)
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onAppBackgrounded() {
+        val broadcastIntent: Intent = Intent(this, AppTrackerService::class.java)
+        broadcastIntent.action = ForegroundServiceConstants.ACTION.STARTFOREGROUND_ACTION
+        sendBroadcast(broadcastIntent)
+    }
 
-        }
-    }
-    override fun onActivityResumed(activity: Activity) {}
-    override fun onActivityPaused(activity: Activity) {}
-    override fun onActivityStopped(activity: Activity) {
-        isActivityChangingConfigurations = activity.isChangingConfigurations();
-        if (--activityReferences == 0 && !isActivityChangingConfigurations) {
-            // App enters background
-        }
-    }
-    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {}
-    override fun onActivityDestroyed(activity: Activity) {}
+
 }

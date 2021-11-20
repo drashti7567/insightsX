@@ -48,7 +48,9 @@ class AppTrackerService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(LOG_TAG, "------------------------------------------------------")
         Log.d(LOG_TAG,"onStartCommand executed with startId: $startId")
+        Log.d(LOG_TAG, "------------------------------------------------------")
         if (intent != null) {
             val action = intent.action
             Log.d(LOG_TAG, "using an intent with action $action")
@@ -58,8 +60,8 @@ class AppTrackerService: Service() {
                 else -> Log.d(LOG_TAG,"This should never happen. No action in the received intent")
             }
         } else {
-            Log.d(LOG_TAG, "with a null intent. It has been probably restarted by the system."
-            )
+            Log.d(LOG_TAG, "with a null intent. It has been probably restarted by the system.")
+            this.startService()
         }
         // by returning this we make sure the service is restarted if the system kills the service
         return START_STICKY
@@ -179,5 +181,8 @@ class AppTrackerService: Service() {
         super.onDestroy()
         Log.d(LOG_TAG, "The service has been destroyed".toUpperCase())
         Toast.makeText(this, "Service destroyed", Toast.LENGTH_SHORT).show()
+        val broadcastIntent: Intent = Intent(this, AppTrackerService::class.java)
+        broadcastIntent.action = ForegroundServiceConstants.ACTION.STARTFOREGROUND_ACTION
+        sendBroadcast(broadcastIntent)
     }
 }

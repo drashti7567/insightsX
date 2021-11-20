@@ -97,9 +97,17 @@
 
         <receiver android:enabled="true"
             android:name=".receivers.RestartAppTrackerIfPhoneRestarted"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:enabled="true"
+            android:name=".receivers.RestartAppTrackerIfAppClosed"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.insightsX.action.startforeground"/>
             </intent-filter>
         </receiver>
 
