@@ -51,6 +51,9 @@ class AppTrackerService: Service() {
         Log.d(LOG_TAG, "------------------------------------------------------")
         Log.d(LOG_TAG,"onStartCommand executed with startId: $startId")
         Log.d(LOG_TAG, "------------------------------------------------------")
+
+        if(isServiceStarted) return START_NOT_STICKY
+
         if (intent != null) {
             val action = intent.action
             Log.d(LOG_TAG, "using an intent with action $action")

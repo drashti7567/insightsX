@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import com.example.insightsX.R
 import com.example.insightsX.constants.ForegroundServiceConstants
 import com.example.insightsX.services.AppTrackerService
+import com.example.insightsX.utils.ScheduleStartAppTrackerAppUtil
 import java.util.*
 
 
@@ -19,7 +20,7 @@ class FinalPageActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.final_app_page)
-
+        ScheduleStartAppTrackerAppUtil.startPeriodicWork(applicationContext)
         this.startAppTrackerService()
     }
 
