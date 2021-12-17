@@ -55,7 +55,7 @@ object AppTracker {
                         val currentProcessPackageName = AppChecker.getForegroundApp(context)
                         val currentApplicationName =
                             MiscUtils.getApplicationNameFromPackage(context, currentProcessPackageName)
-                        Log.d("APp", "$currentApplicationName $currentProcessPackageName")
+//                        Log.d("APp", "$currentApplicationName $currentProcessPackageName")
 
                         val currentDate = Date()
 

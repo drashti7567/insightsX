@@ -5,19 +5,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.insightsX.activities.EntryPoint
 import com.example.insightsX.constants.FileNameConstants
+import com.example.insightsX.receivers.AudioPlaybackReceiver
 import com.example.insightsX.utils.FileUtils
 import com.example.insightsX.utils.MiscUtils
 import com.example.insightsX.utils.PowerManagerUtils
-import java.lang.Exception
 import java.util.*
 
 
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             }, 1000)
 
             this.registerReceiverForPowerSaver(this)
+//            this.registerReceiverForAudioPlayback()
             this.printLauncherName()
         }
         catch(e: Exception) {
@@ -75,4 +79,6 @@ class MainActivity : AppCompatActivity() {
         filter.addAction("android.os.action.POWER_SAVE_MODE_CHANGED")
         registerReceiver(powerSaverChangeReceiver, filter)
     }
+
+
 }
